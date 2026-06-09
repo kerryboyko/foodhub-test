@@ -7,7 +7,7 @@ export const AllergenSchema = z.enum([
   'peanuts',
   'milk',
   'egg',
-  'mustard',
+  'mustard'
 ]);
 
 export const MenuItemSchema = z.object({
@@ -17,20 +17,20 @@ export const MenuItemSchema = z.object({
   priceCents: z.number().int().nonnegative(),
   allergens: z.array(AllergenSchema),
   available: z.boolean(),
-  image: z.string(),
+  image: z.string()
 });
 
 export const MenuCategorySchema = z.object({
   id: z.string(),
   name: z.string(),
-  items: z.array(MenuItemSchema),
+  items: z.array(MenuItemSchema)
 });
 
 export const RestaurantMenuSchema = z.object({
   restaurantId: z.string(),
   restaurantName: z.string(),
   currency: z.string(),
-  categories: z.array(MenuCategorySchema),
+  categories: z.array(MenuCategorySchema)
 });
 
 export type Allergen = z.infer<typeof AllergenSchema>;

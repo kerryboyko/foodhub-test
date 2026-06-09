@@ -9,7 +9,7 @@ export default function Item({
   priceCents,
   available,
   allergens,
-  image,
+  image
 }: MenuItem) {
   return (
     <div key={id} className={styles.item} data-testid={`item-${id}`}>

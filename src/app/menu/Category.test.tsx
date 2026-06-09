@@ -8,7 +8,7 @@ import type { MenuCategory } from '@/schemas/menu';
 vi.mock('./Item', () => ({
   default: ({ id, name }: { id: string; name: string }) => (
     <div data-testid={`mock-item-${id}`}>{name}</div>
-  ),
+  )
 }));
 
 describe('Category', () => {
@@ -24,7 +24,7 @@ describe('Category', () => {
         priceCents: 1099,
         available: true,
         allergens: ['gluten', 'milk'],
-        image: '/images/classic-cheeseburger.jpg',
+        image: '/images/classic-cheeseburger.jpg'
       },
       {
         id: 'spicy-chicken-burger',
@@ -33,9 +33,9 @@ describe('Category', () => {
         priceCents: 999,
         available: false,
         allergens: ['gluten', 'egg', 'mustard'],
-        image: '/images/spicy-chicken-burger.jpg',
-      },
-    ],
+        image: '/images/spicy-chicken-burger.jpg'
+      }
+    ]
   };
 
   it('renders the category name', () => {
@@ -43,7 +43,7 @@ describe('Category', () => {
 
     expect(screen.getByTestId('category-burgers')).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { level: 2, name: 'Burgers' }),
+      screen.getByRole('heading', { level: 2, name: 'Burgers' })
     ).toBeInTheDocument();
   });
 
@@ -51,12 +51,12 @@ describe('Category', () => {
     render(<Category {...category} />);
 
     expect(
-      screen.getByTestId('mock-item-classic-cheeseburger'),
+      screen.getByTestId('mock-item-classic-cheeseburger')
     ).toBeInTheDocument();
     expect(screen.getByText('Classic Cheeseburger')).toBeInTheDocument();
 
     expect(
-      screen.getByTestId('mock-item-spicy-chicken-burger'),
+      screen.getByTestId('mock-item-spicy-chicken-burger')
     ).toBeInTheDocument();
     expect(screen.getByText('Spicy Chicken Burger')).toBeInTheDocument();
   });

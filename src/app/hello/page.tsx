@@ -5,7 +5,7 @@ import { headers } from 'next/headers';
 /* This is primarily a test route designed to make sure that tooling is working correctly,
    so in this case I am not worried about seperation of concerns. */
 const TestApiResponseSchema = z.object({
-  message: z.string(),
+  message: z.string()
 });
 
 async function getMessageFromApi() {
@@ -16,7 +16,7 @@ async function getMessageFromApi() {
   const fetchUrl = `${protocol}://${host}/api/hello`;
   console.log('Fetching menu from API at:', fetchUrl);
   const res = await fetch(fetchUrl, {
-    cache: 'no-store',
+    cache: 'no-store'
   });
 
   const json: unknown = await res.json();

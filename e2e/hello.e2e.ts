@@ -3,13 +3,13 @@ import { test, expect } from '@playwright/test';
 test('test', async ({ page }) => {
   await page.goto('/hello');
   await expect(
-    page.getByRole('heading', { name: 'Hello, World!' }),
+    page.getByRole('heading', { name: 'Hello, World!' })
   ).toBeVisible();
   await expect(page.getByTestId('subject-input')).toBeVisible();
   await expect(page.getByTestId('display')).toBeVisible();
   await expect(page.getByTestId('display')).toContainText('Hello World!');
   await expect(page.getByTestId('test-server-side-rendering')).toContainText(
-    'Server Side Rendering Is Working Correctly! This message is rendered on the server.',
+    'Server Side Rendering Is Working Correctly! This message is rendered on the server.'
   );
 
   await expect(page.getByTestId('subject-input')).toHaveValue('World');
