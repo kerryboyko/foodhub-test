@@ -1,6 +1,7 @@
 import type { MenuItem } from '@/schemas/menu';
 import Image from 'next/image';
 import styles from './Item.module.scss';
+import { CartControl } from '@/components/CartControl';
 
 export default function Item({
   id,
@@ -29,6 +30,17 @@ export default function Item({
         Price: €{(priceCents / 100).toFixed(2)}{' '}
         {available ? '' : '(Unavailable)'}
       </p>
+      <CartControl
+        item={{
+          id,
+          name,
+          description,
+          priceCents,
+          available,
+          allergens,
+          image
+        }}
+      />
     </div>
   );
 }

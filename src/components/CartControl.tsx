@@ -8,20 +8,17 @@ type CartControlProps = {
 };
 
 export function CartControl({ item }: CartControlProps) {
-  const { addItem, removeItem, updateQuantity, quantity } = useCartStore(
-    (state) => ({
-      addItem: state.addItem,
-      removeItem: state.removeItem,
-      updateQuantity: state.updateQuantity,
-      quantity: state.itemsById[item.id]?.quantity ?? 0
-    })
+  const addItem = useCartStore((state) => state.addItem);
+  const removeItem = useCartStore((state) => state.removeItem);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+  const quantity = useCartStore(
+    (state) => state.itemsById[item.id]?.quantity ?? 0
   );
+
   const add = () => addItem(item);
   const remove = () => removeItem(item.id);
-  const increment = () => {
-    updateQuantity(item.id, quantity + 1);
-  };
-  const decrement = () => updateQuantity(item.id, Math.max(quantity - 1, 0));
+  const increment = () => updateQuantity(item.id, quantity + 1);
+  const decrement = () => updateQuantity(item.id, quantity - 1);
 
   return (
     <div data-testid={`cart-control-${item.id}`} className={'tbd'}>

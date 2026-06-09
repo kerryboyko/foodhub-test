@@ -1,6 +1,6 @@
 // src/stores/cart-store.ts
 import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { devtools, persist } from 'zustand/middleware';
 import type { CartItem } from './cartTypes';
 import type { MenuItem } from '@/schemas/menu';
 import {
@@ -22,40 +22,42 @@ export type CartState = {
 
 export const useCartStore = create<CartState>()(
   devtools(
-    (set, get) => ({
-      itemsById: {},
-      itemIds: [],
+    persist(
+      (set, get) => ({
+        itemsById: {},
+        itemIds: [],
 
-      addItem: (item) =>
-        set((state) => addItemToCart(state, item), false, 'cart/addItem'),
+        addItem: (item) =>
+          set((state) => addItemToCart(state, item), false, 'cart/addItem'),
 
-      removeItem: (itemId) =>
-        set(
-          (state) => removeItemFromCart(state, itemId),
-          false,
-          'cart/removeItem'
-        ),
+        removeItem: (itemId) =>
+          set(
+            (state) => removeItemFromCart(state, itemId),
+            false,
+            'cart/removeItem'
+          ),
 
-      updateQuantity: (itemId, quantity) =>
-        set(
-          (state) => updateItemQuantityInCart(state, itemId, quantity),
-          false,
-          'cart/updateQuantity'
-        ),
+        updateQuantity: (itemId, quantity) =>
+          set(
+            (state) => updateItemQuantityInCart(state, itemId, quantity),
+            false,
+            'cart/updateQuantity'
+          ),
 
-      clearCart: () =>
-        set({ itemsById: {}, itemIds: [] }, false, 'cart/clearCart'),
+        clearCart: () =>
+          set({ itemsById: {}, itemIds: [] }, false, 'cart/clearCart'),
 
-      getItems: () =>
-        get()
-          .itemIds.map((id) => get().itemsById[id])
-          .filter((item): item is CartItem => Boolean(item)),
+        getItems: () =>
+          get()
+            .itemIds.map((id) => get().itemsById[id])
+            .filter((item): item is CartItem => Boolean(item)),
 
-      subtotalCents: () =>
-        get()
-          .getItems()
-          .reduce((total, item) => total + item.priceCents * item.quantity, 0)
-    }),
-    { name: 'cart-store' }
+        subtotalCents: () =>
+          get()
+            .getItems()
+            .reduce((total, item) => total + item.priceCents * item.quantity, 0)
+      }),
+      { name: 'cart-store' }
+    )
   )
 );
