@@ -1,3 +1,41 @@
+
+
+
+Next.js
+
+No Tailwind (Tailwind is essentially syntactic sugar for CSS, but eliminates specificity by storing everything at 'class' level specificity. In practice, I've found it creates hard to debug CSS errors.) 
+
+Yes React Compiler. I had not used this before but essentially it automatically memorizes parts of the code. Manual memorization clutters the code. 
+
+I'm in favor of anything which reduces the amount of boilerplate that needs to be written, as additional code = more places for bugs to hide. For a simple app such as this, it's overkill, but I also don't see a reason *not* to use it. One note is that to use React Compiler, it assumes you're following the Rules of React, which is why ESLint is so important - it'll catch when you don't. https://www.debugbear.com/blog/react-compiler The tradeoff is that you need to use React Developer Tools Profile to investigate the issue rather than checking explicit React.memo, useMemo, or useCallback calls in your code. This, in the long term, makes debugging performance issues more challenging. 
+
+Because of my policy of: "Always try to learn something new on a code challenge," I weighed the tradeoffs and went with React Compiler. 
+
+### State management
+
+Redux would be disproportionate for this exercise. The app only needs lightweight shared state for the cart and checkout flow, so I used Zustand with development-only debugging middleware. This provides observable state transitions without adding significant boilerplate.
+
+### React Compiler
+
+I used React Compiler for the following reasons:  
+
+* This is a greenfield project. 
+* React Compiler is production-ready. 
+* Manual useMemo, useCallback, and memo introduce complexity
+* Less code means fewer oppertunities for bugs and less cognative load. 
+
+There are tradeoffs I'm aware of, see: https://www.debugbear.com/blog/react-compiler
+
+Added: 
+
+* Zustand
+* Zod
+* vitest
+* testinglibrary-react
+* plywright
+* prettier
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
