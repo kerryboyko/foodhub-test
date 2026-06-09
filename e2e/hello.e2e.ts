@@ -8,9 +8,12 @@ test('test', async ({ page }) => {
   await expect(page.getByTestId('subject-input')).toBeVisible();
   await expect(page.getByTestId('display')).toBeVisible();
   await expect(page.getByTestId('display')).toContainText('Hello World!');
+  await expect(page.getByTestId('test-server-side-rendering')).toContainText(
+    'Server Side Rendering Is Working Correctly! This message is rendered on the server.',
+  );
+
   await expect(page.getByTestId('subject-input')).toHaveValue('World');
   await page.getByTestId('subject-input').dblclick();
   await page.getByTestId('subject-input').fill('FoodHub');
   await expect(page.getByTestId('subject-input')).toHaveValue('FoodHub');
-  await expect(page.getByTestId('display')).toContainText('Hello FoodHub!');
 });

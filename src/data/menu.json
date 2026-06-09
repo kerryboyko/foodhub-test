@@ -1,0 +1,145 @@
+{
+  "restaurantId": "takeaway_001",
+  "restaurantName": "Harbour Wok & Grill",
+  "currency": "EUR",
+  "categories": [
+    {
+      "id": "cat_starters",
+      "name": "Starters",
+      "items": [
+        {
+          "id": "item_1001",
+          "name": "Vegetable Spring Rolls",
+          "description": "Crispy pastry rolls filled with cabbage, carrot, mushrooms, and glass noodles. Served with sweet chilli dip.",
+          "priceCents": 595,
+          "allergens": ["gluten", "soy"],
+          "available": true,
+          "image": "/images/menu/vegetable-spring-rolls.jpg"
+        },
+        {
+          "id": "item_1002",
+          "name": "Salt & Chilli Chicken Bites",
+          "description": "Crispy chicken pieces tossed with fresh chilli, garlic, spring onion, and peppers.",
+          "priceCents": 795,
+          "allergens": ["gluten", "soy"],
+          "available": true,
+          "image": "/images/menu/salt-and-chilli-chicken-bites.jpg"
+        }
+      ]
+    },
+    {
+      "id": "cat_mains",
+      "name": "Mains",
+      "items": [
+        {
+          "id": "item_2001",
+          "name": "Beef Black Bean",
+          "description": "Tender beef strips stir-fried with peppers, onions, and black bean garlic sauce. Served with steamed rice.",
+          "priceCents": 1295,
+          "allergens": ["soy", "gluten"],
+          "available": true,
+          "image": "/images/menu/beef-in-black-bean.jpg"
+        },
+        {
+          "id": "item_2002",
+          "name": "Thai Green Chicken Curry",
+          "description": "Chicken breast simmered in coconut green curry with bamboo shoots, courgette, peppers, and basil.",
+          "priceCents": 1350,
+          "allergens": ["fish", "soy"],
+          "available": true,
+          "image": "/images/menu/thai-green-chicken-curry.jpg"
+        },
+        {
+          "id": "item_2003",
+          "name": "Crispy Tofu Satay Bowl",
+          "description": "Crispy tofu with jasmine rice, pickled vegetables, cucumber, and peanut satay sauce.",
+          "priceCents": 1195,
+          "allergens": ["peanuts", "soy", "gluten"],
+          "available": true,
+          "image": "/images/menu/crispy-tofu-satay-bowl.jpg"
+        }
+      ]
+    },
+    {
+      "id": "cat_burgers",
+      "name": "Burgers",
+      "items": [
+        {
+          "id": "item_3001",
+          "name": "Classic Smash Burger",
+          "description": "Two smashed beef patties with cheddar, pickles, lettuce, onion, house sauce, and toasted brioche bun.",
+          "priceCents": 1095,
+          "allergens": ["gluten", "milk", "egg", "mustard"],
+          "available": true,
+          "image": "/images/menu/classic-smash-burger.jpg"
+        },
+        {
+          "id": "item_3002",
+          "name": "Spicy Chicken Burger",
+          "description": "Crispy buttermilk chicken with hot sauce mayo, lettuce, slaw, and jalapeños.",
+          "priceCents": 1125,
+          "allergens": ["gluten", "milk", "egg", "mustard"],
+          "available": true,
+          "image": "/images/menu/spicy-chicken-burger.jpg"
+        }
+      ]
+    },
+    {
+      "id": "cat_sides",
+      "name": "Sides",
+      "items": [
+        {
+          "id": "item_4001",
+          "name": "Skinny Fries",
+          "description": "Crisp golden fries with sea salt.",
+          "priceCents": 395,
+          "allergens": [],
+          "available": true,
+          "image": "/images/menu/skinny-fries.jpg"
+        },
+        {
+          "id": "item_4002",
+          "name": "Garlic Cheese Fries",
+          "description": "Fries topped with garlic butter, melted cheddar, parsley, and house garlic sauce.",
+          "priceCents": 595,
+          "allergens": ["milk", "egg"],
+          "available": true,
+          "image": "/images/menu/garlic-cheese-fries.jpg"
+        },
+        {
+          "id": "item_4003",
+          "name": "Egg Fried Rice",
+          "description": "Wok-fried rice with egg, peas, carrots, spring onion, and light soy.",
+          "priceCents": 495,
+          "allergens": ["egg", "soy", "gluten"],
+          "available": false,
+          "image": "/images/menu/egg-fried-rice.jpg"
+        }
+      ]
+    },
+    {
+      "id": "cat_drinks",
+      "name": "Drinks",
+      "items": [
+        {
+          "id": "item_5001",
+          "name": "Coke 330ml",
+          "description": "Chilled can of Coca-Cola.",
+          "priceCents": 195,
+          "allergens": [],
+          "available": true,
+          "image": "/images/menu/coke-330ml.jpg"
+        },
+        {
+          "id": "item_5002",
+          "name": "Sparkling Water 500ml",
+          "description": "Chilled bottle of sparkling mineral water.",
+          "priceCents": 175,
+          "allergens": [],
+          "available": true,
+          "image": "/images/menu/sparkling-water-500ml.jpg"
+        }
+      ]
+    }
+  ]
+}

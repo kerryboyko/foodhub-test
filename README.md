@@ -57,6 +57,32 @@ Added
 - Playwright for VSCode
 - Husky / Lint-staged
 
+### Use Of AI in Development
+
+The menu was generated using AI tools, specifically ChatGPT.
+
+There were also a number of things that I "used to know" how to do in my career that I have since forgotten the implementation details of; ChatGPT helped me with those details.
+
+### Notes for self
+
+The Quality Pipeline:
+
+Editor
+↓
+Format on save
+↓
+Pre-commit checks
+↓
+Type safety
+↓
+Unit tests
+↓
+Integration tests
+↓
+E2E tests
+↓
+CI
+
 ## Getting Started
 
 First, run the development server:
