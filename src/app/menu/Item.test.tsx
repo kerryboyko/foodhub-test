@@ -34,7 +34,7 @@ describe('Item', () => {
       screen.getByText('A smoky beef burger with cheddar and pickles.'),
     ).toBeInTheDocument();
 
-    expect(screen.getByText(/Price: 10.99/)).toBeInTheDocument();
+    expect(screen.getByText(/Price: €10.99/)).toBeInTheDocument();
     expect(screen.getByText('Allergens: gluten, milk')).toBeInTheDocument();
 
     expect(
@@ -47,8 +47,8 @@ describe('Item', () => {
   it('shows unavailable text when item is unavailable', () => {
     render(<Item {...baseItem} available={false} />);
 
-    expect(screen.getByText(/Price: 10.99/)).toHaveTextContent(
-      'Price: 10.99 (Unavailable)',
+    expect(screen.getByText(/Price: €10.99/)).toHaveTextContent(
+      'Price: €10.99 (Unavailable)',
     );
   });
 
