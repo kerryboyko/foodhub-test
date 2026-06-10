@@ -1,0 +1,3 @@
+export const DELIVERY_FEE_CENTS = 300;
+
+export const DELIVERY_WAIVER_MINIMUM = 2000;
