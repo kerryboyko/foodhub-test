@@ -17,7 +17,7 @@ describe('getMenu', () => {
 
     expect(menu.categories[0]).toMatchObject({
       id: 'cat_starters',
-      name: 'Starters',
+      name: 'Starters'
     });
 
     expect(menu.categories[0].items.length).toBeGreaterThan(0);
@@ -31,7 +31,7 @@ describe('getMenu', () => {
       id: 'item_1001',
       name: 'Vegetable Spring Rolls',
       priceCents: 595,
-      available: true,
+      available: true
     });
 
     expect(firstItem.allergens).toContain('gluten');
