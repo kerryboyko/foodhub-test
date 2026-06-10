@@ -1,6 +1,7 @@
 'use client';
 import { CartControl } from '@/components/CartControl';
 import { DELIVERY_FEE_CENTS, DELIVERY_WAIVER_MINIMUM } from '@/data/constants';
+import { formatPrice } from '@/lib/formatPrice';
 import { useCartStore } from '@/stores/cartStore';
 
 export default function Cart() {
@@ -12,11 +13,11 @@ export default function Cart() {
   return (
     <main>
       <>
-        <div>Subtotal: €{(subtotalCents / 100).toFixed(2)}</div>
+        <div>Subtotal: {formatPrice(subtotalCents)}</div>
         <div>
           {subtotalCents >= DELIVERY_WAIVER_MINIMUM
             ? 'This order qualifies for free delivery!'
-            : `Delivery: €${(DELIVERY_FEE_CENTS / 100).toFixed(2)}`}
+            : `Delivery: ${formatPrice(DELIVERY_FEE_CENTS)}`}
         </div>
         {items.map((item) => (
           <div key={item.id}>

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import OrderSummary from './OrderSummary';
 import CheckoutForm from './CheckoutForm';
 
 export default async function CartPage() {
@@ -16,7 +15,6 @@ export default async function CartPage() {
             <Link href="/cart">Change Order</Link>
           </div>
           <hr />
-          <OrderSummary />
           <CheckoutForm />
         </div>
       </>

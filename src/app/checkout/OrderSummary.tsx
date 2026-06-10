@@ -1,4 +1,5 @@
 'use client';
+import { formatPrice } from '@/lib/formatPrice';
 import { useCartStore } from '@/stores/cartStore';
 
 export default function OrderSummary() {
@@ -13,9 +14,7 @@ export default function OrderSummary() {
           <div key={item.id}>
             <h2>{item.name}</h2>
             <p>Quantity: {item.quantity}</p>
-            <p>
-              Price: €{((item.priceCents * item.quantity) / 100).toFixed(2)}
-            </p>
+            <p>Price: {formatPrice(item.priceCents * item.quantity)}</p>
           </div>
         ))}
         <hr />

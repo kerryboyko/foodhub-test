@@ -3,6 +3,7 @@ import Image from 'next/image';
 import styles from './Item.module.scss';
 import { CartControl } from '@/components/CartControl';
 import Link from 'next/link';
+import { formatPrice } from '@/lib/formatPrice';
 
 export default function Item({
   id,
@@ -28,8 +29,8 @@ export default function Item({
         Allergens: {allergens.join(', ') || 'None'}
       </p>
       <p className={styles.item__price}>
-        Price: €{(priceCents / 100).toFixed(2)}{' '}
-        {available ? '' : '(Unavailable)'}
+        Price: {formatPrice(priceCents)}
+        {available ? '' : ' (Unavailable)'}
       </p>
       <CartControl
         item={{

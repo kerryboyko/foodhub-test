@@ -7,6 +7,7 @@ import type { CheckoutFormData } from '@/schemas/checkout';
 import { useCartStore } from '@/stores/cartStore';
 import { DELIVERY_WAIVER_MINIMUM, DELIVERY_FEE_CENTS } from '@/data/constants';
 import DeliveryFeeDisplay from './DeliveryFeeDisplay';
+import { formatPrice } from '@/lib/formatPrice';
 
 export default function CheckoutForm() {
   const itemIds = useCartStore((state) => state.itemIds);
@@ -41,6 +42,8 @@ export default function CheckoutForm() {
       ? DELIVERY_FEE_CENTS
       : 0;
 
+  const totalCents = subtotalCents + deliveryChargeCents;
+
   const doHandleSubmit = handleSubmit(async (data: CheckoutFormData) => {
     const orderData = {
       items: items.map((item) => ({
@@ -51,7 +54,7 @@ export default function CheckoutForm() {
       })),
       subtotalCents,
       deliveryChargeCents,
-      totalCents: subtotalCents + deliveryChargeCents
+      totalCents
     };
     await new Promise((resolve) => setTimeout(resolve, 800));
     console.log('Fake checkout submitted:', { data, order: orderData }); // codesmell. Replace with real submission logic.
@@ -60,14 +63,12 @@ export default function CheckoutForm() {
 
   return (
     <>
-      <div>Subtotal: €{(subtotalCents / 100).toFixed(2)}</div>
+      <div>Subtotal: {formatPrice(subtotalCents)}</div>
       <DeliveryFeeDisplay
-        fulfillmentType={fulfilmentType}
+        fulfilmentType={fulfilmentType}
         subtotalCents={subtotalCents}
       />
-      <div>
-        Total: €{((subtotalCents + deliveryChargeCents) / 100).toFixed(2)}
-      </div>
+      <div>Total: {formatPrice(totalCents)}</div>
       <hr />
       <form onSubmit={doHandleSubmit}>
         <div>
