@@ -21,6 +21,8 @@
   &__image {
     width: 100%;
     height: auto;
+    max-width: 200px;
+    border-radius: 8px;
     object-fit: cover;
     margin-bottom: 10px;
   }

@@ -2,6 +2,7 @@ import type { MenuItem } from '@/schemas/menu';
 import Image from 'next/image';
 import styles from './Item.module.scss';
 import { CartControl } from '@/components/CartControl';
+import Link from 'next/link';
 
 export default function Item({
   id,
@@ -41,6 +42,9 @@ export default function Item({
           image
         }}
       />
+      <div>
+        <Link href="/cart">Go To Cart</Link>
+      </div>
     </div>
   );
 }
