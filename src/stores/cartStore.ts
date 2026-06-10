@@ -20,6 +20,18 @@ export type CartState = {
   subtotalCents: () => number;
 };
 
+/* N.B.: Regarding the getItems() selector. We're going to end up recreating it a lot in the component, instead of
+   calling it directly. 
+   
+   There's an issue with React Compiler; the selector will return a new array on every render.
+
+   Now, the normal solution is to use Zustand's 'useShallow', but React Compiler + Zustand + selector-generated
+   arrays can sometimes produce surprising interactions. 
+
+   I'm making a deliberate choice to keep the selector for internal use, but to use a manual selector
+   in the components. 
+*/
+
 export const useCartStore = create<CartState>()(
   devtools(
     persist(

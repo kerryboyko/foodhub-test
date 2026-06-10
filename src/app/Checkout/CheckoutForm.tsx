@@ -15,6 +15,7 @@ export default function CheckoutForm() {
   const items = itemIds.map((id) => itemsById[id]).filter(Boolean);
 
   const subtotalCents = useCartStore((state) => state.subtotalCents());
+
   // const clearCart = useCartStore((state) => state.clearCart);
 
   const {
@@ -43,6 +44,8 @@ export default function CheckoutForm() {
       : 0;
 
   const totalCents = subtotalCents + deliveryChargeCents;
+
+  const isCartEmpty = items.length === 0;
 
   const doHandleSubmit = handleSubmit(async (data: CheckoutFormData) => {
     const orderData = {
@@ -185,7 +188,7 @@ export default function CheckoutForm() {
           {errors.ccCVCcode && <p>{errors.ccCVCcode.message}</p>}
         </div>
 
-        <button type="submit" disabled={isSubmitting}>
+        <button type="submit" disabled={isSubmitting || isCartEmpty}>
           {isSubmitting ? 'Placing order...' : 'Place order'}
         </button>
       </form>
