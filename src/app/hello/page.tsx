@@ -33,6 +33,7 @@ export default async function HelloPage() {
       </div>
       <Hello />
       <div>This test page exists to test tooling software.</div>
+      <div>Normally, this would be removed for a real application</div>
       <div data-testid="test-server-side-rendering">{message}</div>
     </>
   );

@@ -1,21 +1,21 @@
-// src/app/menu/page.tsx
-
 import Link from 'next/link';
-import Cart from './Cart';
+import CheckoutForm from './CheckoutForm';
 
 export default async function CartPage() {
   return (
     <main>
       <>
-        <div>Cart</div>
-        <Cart />
+        <div>Checkout</div>
+        <hr />
         <div>
           <div>
             <Link href="/menu">Back to menu</Link>
           </div>
           <div>
-            <Link href="/checkout">Go to checkout</Link>
+            <Link href="/cart">Change Order</Link>
           </div>
+          <hr />
+          <CheckoutForm />
         </div>
       </>
     </main>

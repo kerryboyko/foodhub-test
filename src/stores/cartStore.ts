@@ -1,8 +1,10 @@
 // src/stores/cart-store.ts
+
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import type { CartItem } from './cartTypes';
+
 import type { MenuItem } from '@/schemas/menu';
+import type { CartItem } from './cartTypes';
 import {
   addItemToCart,
   removeItemFromCart,
@@ -12,18 +14,33 @@ import {
 export type CartState = {
   itemsById: Record<string, CartItem>;
   itemIds: string[];
+
   addItem: (item: MenuItem) => void;
   removeItem: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
-  getItems: () => CartItem[];
-  subtotalCents: () => number;
 };
 
+// selectors
+export const selectCartItems = (state: CartState): CartItem[] =>
+  state.itemIds
+    .map((id) => state.itemsById[id])
+    .filter((item): item is CartItem => Boolean(item));
+
+export const selectSubtotalCents = (state: CartState): number =>
+  selectCartItems(state).reduce(
+    (total, item) => total + item.priceCents * item.quantity,
+    0
+  );
+
+export const selectCartIsEmpty = (state: CartState): boolean =>
+  state.itemIds.length === 0;
+
+// useCartStore
 export const useCartStore = create<CartState>()(
   devtools(
     persist(
-      (set, get) => ({
+      (set) => ({
         itemsById: {},
         itemIds: [],
 
@@ -45,17 +62,7 @@ export const useCartStore = create<CartState>()(
           ),
 
         clearCart: () =>
-          set({ itemsById: {}, itemIds: [] }, false, 'cart/clearCart'),
-
-        getItems: () =>
-          get()
-            .itemIds.map((id) => get().itemsById[id])
-            .filter((item): item is CartItem => Boolean(item)),
-
-        subtotalCents: () =>
-          get()
-            .getItems()
-            .reduce((total, item) => total + item.priceCents * item.quantity, 0)
+          set({ itemsById: {}, itemIds: [] }, false, 'cart/clearCart')
       }),
       { name: 'cart-store' }
     )
