@@ -1,14 +1,11 @@
 'use client';
 import { CartControl } from '@/components/CartControl';
 import { DELIVERY_FEE_CENTS, DELIVERY_WAIVER_MINIMUM } from '@/data/constants';
+import { useCheckoutCart } from '@/hooks/checkout/useCheckoutCart';
 import { formatPrice } from '@/lib/formatPrice';
-import { useCartStore } from '@/stores/cartStore';
 
 export default function Cart() {
-  const itemIds = useCartStore((state) => state.itemIds);
-  const itemsById = useCartStore((state) => state.itemsById);
-  const subtotalCents = useCartStore((state) => state.subtotalCents());
-  const items = itemIds.map((id) => itemsById[id]).filter(Boolean);
+  const { items, subtotalCents } = useCheckoutCart();
 
   return (
     <main>

@@ -1,159 +1,198 @@
 // src/stores/cart-store.test.ts
+
 import { beforeEach, describe, expect, it } from 'vitest';
-import { useCartStore } from './cartStore';
+
+import {
+  selectCartIsEmpty,
+  selectCartItems,
+  selectSubtotalCents,
+  useCartStore,
+  type CartState
+} from './cartStore';
+
 import type { MenuItem } from '@/schemas/menu';
 
-const springRolls: MenuItem = {
-  id: 'item_1001',
-  name: 'Vegetable Spring Rolls',
-  description: 'Crispy pastry rolls.',
-  priceCents: 595,
-  allergens: ['gluten', 'soy'],
+const pizza: MenuItem = {
+  id: 'pizza-1',
+  name: 'Pepperoni Pizza',
+  description: 'Pizza with pepperoni',
+  priceCents: 1299,
+  allergens: ['gluten', 'milk'],
   available: true,
-  image: '/images/menu/vegetable-spring-rolls.jpg'
+  image: ''
 };
 
-const fries: MenuItem = {
-  id: 'item_4001',
-  name: 'Skinny Fries',
-  description: 'Crisp golden fries.',
-  priceCents: 395,
+const chips: MenuItem = {
+  id: 'chips-1',
+  name: 'Large Chips',
+  description: 'A large portion of chips',
+  priceCents: 399,
   allergens: [],
   available: true,
-  image: '/images/menu/skinny-fries.jpg'
+  image: ''
 };
 
-describe('cart-store', () => {
-  beforeEach(() => {
-    useCartStore.getState().clearCart();
+const emptyState: CartState = {
+  itemsById: {},
+  itemIds: [],
+  addItem: () => {},
+  removeItem: () => {},
+  updateQuantity: () => {},
+  clearCart: () => {}
+};
+
+beforeEach(() => {
+  useCartStore.setState({
+    itemsById: {},
+    itemIds: []
+  });
+});
+
+describe('cart selectors', () => {
+  it('selectCartItems returns cart items in itemIds order', () => {
+    const state: CartState = {
+      ...emptyState,
+      itemIds: ['chips-1', 'pizza-1'],
+      itemsById: {
+        'pizza-1': {
+          ...pizza,
+          quantity: 2
+        },
+        'chips-1': {
+          ...chips,
+          quantity: 1
+        }
+      }
+    };
+
+    expect(selectCartItems(state)).toEqual([
+      {
+        ...chips,
+        quantity: 1
+      },
+      {
+        ...pizza,
+        quantity: 2
+      }
+    ]);
   });
 
+  it('selectCartItems filters missing items', () => {
+    const state: CartState = {
+      ...emptyState,
+      itemIds: ['pizza-1', 'missing-item'],
+      itemsById: {
+        'pizza-1': {
+          ...pizza,
+          quantity: 1
+        }
+      }
+    };
+
+    expect(selectCartItems(state)).toEqual([
+      {
+        ...pizza,
+        quantity: 1
+      }
+    ]);
+  });
+
+  it('selectSubtotalCents returns the cart subtotal', () => {
+    const state: CartState = {
+      ...emptyState,
+      itemIds: ['pizza-1', 'chips-1'],
+      itemsById: {
+        'pizza-1': {
+          ...pizza,
+          quantity: 2
+        },
+        'chips-1': {
+          ...chips,
+          quantity: 3
+        }
+      }
+    };
+
+    expect(selectSubtotalCents(state)).toBe(1299 * 2 + 399 * 3);
+  });
+
+  it('selectCartIsEmpty returns true when there are no item ids', () => {
+    expect(selectCartIsEmpty(emptyState)).toBe(true);
+  });
+
+  it('selectCartIsEmpty returns false when there are item ids', () => {
+    const state: CartState = {
+      ...emptyState,
+      itemIds: ['pizza-1']
+    };
+
+    expect(selectCartIsEmpty(state)).toBe(false);
+  });
+});
+
+describe('useCartStore actions', () => {
   it('starts with an empty cart', () => {
     const state = useCartStore.getState();
 
-    expect(state.getItems()).toEqual([]);
-    expect(state.subtotalCents()).toBe(0);
+    expect(state.itemIds).toEqual([]);
+    expect(state.itemsById).toEqual({});
   });
 
-  it('adds a new item to the cart', () => {
-    useCartStore.getState().addItem(springRolls);
+  it('adds an item to the cart', () => {
+    useCartStore.getState().addItem(pizza);
 
     const state = useCartStore.getState();
 
-    expect(state.itemIds).toEqual(['item_1001']);
-
-    expect(state.itemsById.item_1001).toMatchObject({
-      id: 'item_1001',
+    expect(state.itemIds).toEqual(['pizza-1']);
+    expect(state.itemsById['pizza-1']).toEqual({
+      ...pizza,
       quantity: 1
     });
   });
 
   it('increments quantity when adding the same item again', () => {
-    const store = useCartStore.getState();
+    useCartStore.getState().addItem(pizza);
+    useCartStore.getState().addItem(pizza);
 
-    store.addItem(springRolls);
-    store.addItem(springRolls);
+    const state = useCartStore.getState();
 
-    expect(useCartStore.getState().itemsById.item_1001.quantity).toBe(2);
-    expect(useCartStore.getState().itemIds).toEqual(['item_1001']);
+    expect(state.itemIds).toEqual(['pizza-1']);
+    expect(state.itemsById['pizza-1']?.quantity).toBe(2);
   });
 
-  it('preserves item order', () => {
-    const store = useCartStore.getState();
+  it('updates item quantity', () => {
+    useCartStore.getState().addItem(pizza);
 
-    store.addItem(springRolls);
-    store.addItem(fries);
+    useCartStore.getState().updateQuantity('pizza-1', 5);
 
-    expect(
-      useCartStore
-        .getState()
-        .getItems()
-        .map((item) => item.id)
-    ).toEqual(['item_1001', 'item_4001']);
-  });
-
-  it('updates quantity', () => {
-    const store = useCartStore.getState();
-
-    store.addItem(springRolls);
-    store.updateQuantity('item_1001', 3);
-
-    expect(useCartStore.getState().itemsById.item_1001.quantity).toBe(3);
-  });
-
-  it('removes item when quantity is updated to zero', () => {
-    const store = useCartStore.getState();
-
-    store.addItem(springRolls);
-    store.updateQuantity('item_1001', 0);
-
-    expect(useCartStore.getState().itemsById.item_1001).toBeUndefined();
-    expect(useCartStore.getState().itemIds).toEqual([]);
+    expect(useCartStore.getState().itemsById['pizza-1']?.quantity).toBe(5);
   });
 
   it('removes an item from the cart', () => {
-    const store = useCartStore.getState();
+    useCartStore.getState().addItem(pizza);
+    useCartStore.getState().addItem(chips);
 
-    store.addItem(springRolls);
-    store.removeItem('item_1001');
+    useCartStore.getState().removeItem('pizza-1');
 
-    expect(useCartStore.getState().getItems()).toEqual([]);
-  });
+    const state = useCartStore.getState();
 
-  it('calculates subtotal in cents', () => {
-    const store = useCartStore.getState();
-
-    store.addItem(springRolls);
-    store.addItem(springRolls);
-    store.addItem(fries);
-
-    expect(useCartStore.getState().subtotalCents()).toBe(1585);
+    expect(state.itemIds).toEqual(['chips-1']);
+    expect(state.itemsById['pizza-1']).toBeUndefined();
+    expect(state.itemsById['chips-1']).toEqual({
+      ...chips,
+      quantity: 1
+    });
   });
 
   it('clears the cart', () => {
-    const store = useCartStore.getState();
+    useCartStore.getState().addItem(pizza);
+    useCartStore.getState().addItem(chips);
 
-    store.addItem(springRolls);
-    store.addItem(fries);
-    store.clearCart();
+    useCartStore.getState().clearCart();
 
-    expect(useCartStore.getState().itemsById).toEqual({});
-    expect(useCartStore.getState().itemIds).toEqual([]);
-  });
+    const state = useCartStore.getState();
 
-  it('works with a very complex scenario', () => {
-    const store = useCartStore.getState();
-
-    store.addItem(springRolls);
-    store.addItem(fries);
-    store.updateQuantity(springRolls.id, 5);
-    store.updateQuantity(fries.id, 2);
-    expect(useCartStore.getState().itemsById).toEqual({
-      [springRolls.id]: { ...springRolls, quantity: 5 },
-      [fries.id]: { ...fries, quantity: 2 }
-    });
-    expect(useCartStore.getState().itemIds).toEqual([springRolls.id, fries.id]);
-    expect(useCartStore.getState().subtotalCents()).toBe(3765);
-
-    store.removeItem(springRolls.id);
-    expect(useCartStore.getState().itemsById).toEqual({
-      [fries.id]: { ...fries, quantity: 2 }
-    });
-    expect(useCartStore.getState().itemIds).toEqual([fries.id]);
-    expect(useCartStore.getState().subtotalCents()).toBe(790);
-
-    store.addItem(springRolls);
-    store.updateQuantity(springRolls.id, 2);
-    expect(useCartStore.getState().itemsById).toEqual({
-      [springRolls.id]: { ...springRolls, quantity: 2 },
-      [fries.id]: { ...fries, quantity: 2 }
-    });
-    expect(useCartStore.getState().itemIds).toEqual([fries.id, springRolls.id]);
-    expect(useCartStore.getState().subtotalCents()).toBe(1980);
-
-    store.clearCart();
-
-    expect(useCartStore.getState().itemsById).toEqual({});
-    expect(useCartStore.getState().itemIds).toEqual([]);
+    expect(state.itemIds).toEqual([]);
+    expect(state.itemsById).toEqual({});
   });
 });

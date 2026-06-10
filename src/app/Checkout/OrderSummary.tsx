@@ -1,24 +1,22 @@
 'use client';
+import { useCheckoutCart } from '@/hooks/checkout/useCheckoutCart';
 import { formatPrice } from '@/lib/formatPrice';
-import { useCartStore } from '@/stores/cartStore';
 
 export default function OrderSummary() {
-  const itemIds = useCartStore((state) => state.itemIds);
-  const itemsById = useCartStore((state) => state.itemsById);
-
-  // Without React Compiler, this would be a reasonable candidate
-  // for useMemo since it derives an array from store state.
-  // React Compiler can often optimize computations like this automatically.
-  const items = itemIds.map((id) => itemsById[id]).filter(Boolean);
+  const { items } = useCheckoutCart();
 
   return (
     <main>
       <>
         {items.map((item) => (
           <div key={item.id}>
-            <h2>{item.name}</h2>
-            <p>Quantity: {item.quantity}</p>
-            <p>Price: {formatPrice(item.priceCents * item.quantity)}</p>
+            <h2 data-testid={`item-name-${item.name}`}>{item.name}</h2>
+            <p data-testid={`item-quantity-${item.name}`}>
+              Quantity: {item.quantity}
+            </p>
+            <p data-testid={`item-price-${item.name}`}>
+              Price: {formatPrice(item.priceCents * item.quantity)}
+            </p>
           </div>
         ))}
         <hr />
