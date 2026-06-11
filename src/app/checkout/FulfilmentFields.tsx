@@ -17,6 +17,7 @@ export default function FulfilmentFields({
 
         <label>
           <input
+            data-testid="fulfilment-fields-radio-delivery"
             type="radio"
             value="delivery"
             {...register('fulfilmentType')}
@@ -26,6 +27,7 @@ export default function FulfilmentFields({
 
         <label>
           <input
+            data-testid="fulfilment-fields-radio-collection"
             type="radio"
             value="collection"
             {...register('fulfilmentType')}

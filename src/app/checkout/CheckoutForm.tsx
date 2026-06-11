@@ -105,7 +105,11 @@ export default function CheckoutForm() {
             {submitError}
           </p>
         ) : null}
-        <button type="submit" disabled={isSubmitting || isCartEmpty}>
+        <button
+          data-testid={'checkout-page-submit-button'}
+          type="submit"
+          disabled={isSubmitting || isCartEmpty}
+        >
           {isSubmitting ? 'Placing order...' : 'Place order'}
         </button>
       </form>
