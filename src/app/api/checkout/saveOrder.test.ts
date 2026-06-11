@@ -1,6 +1,15 @@
 import { saveOrder } from './saveOrder';
 import { ensureOrdersFile } from './ensureOrdersFile.js';
 import type { CheckoutFormData } from '@/schemas/checkout';
+import { CheckoutRequestData } from '@/schemas/checkoutRequest';
+
+const aiMocks = vi.hoisted(() => ({
+  generateKitchenSummary: vi.fn()
+}));
+
+vi.mock('@/lib/openai/generateKitchenSummary', () => ({
+  generateKitchenSummary: aiMocks.generateKitchenSummary
+}));
 
 const fsMocks = vi.hoisted(() => ({
   readFile: vi.fn(),
@@ -25,7 +34,7 @@ describe('saveOrder', () => {
 
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-06-11T12:00:00.000Z'));
-
+    aiMocks.generateKitchenSummary.mockResolvedValue('Mock kitchen summary.');
     fsMocks.readFile.mockResolvedValue('[]');
     fsMocks.writeFile.mockResolvedValue(undefined);
     mocks.ensureOrdersFile.mockResolvedValue(undefined);
@@ -46,7 +55,7 @@ describe('saveOrder', () => {
       fulfilmentType: 'delivery'
     } satisfies CheckoutFormData;
 
-    const order = await saveOrder(checkout);
+    const order = await saveOrder(checkout as unknown as CheckoutRequestData);
 
     expect(ensureOrdersFile).toHaveBeenCalledOnce();
 
@@ -55,6 +64,7 @@ describe('saveOrder', () => {
     expect(order).toEqual({
       id: 'test-order-id',
       createdAt: '2026-06-11T12:00:00.000Z',
+      kitchenSummary: 'Mock kitchen summary.',
       ...checkout
     });
 
@@ -84,7 +94,7 @@ describe('saveOrder', () => {
       fulfilmentType: 'delivery'
     } satisfies CheckoutFormData;
 
-    const order = await saveOrder(checkout);
+    const order = await saveOrder(checkout as unknown as CheckoutRequestData);
 
     expect(fsMocks.writeFile).toHaveBeenCalledWith(
       expect.any(String),
