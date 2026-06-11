@@ -22,32 +22,38 @@ export default async function OrderConfirmationPage({ params }: PageProps) {
   return (
     <main>
       <h1>Order Confirmed</h1>
-      <p>Order ID: {order.id}</p>
+      <p data-testid={`order-confirmation-${order.id}`}>Order ID: {order.id}</p>
 
       <h2>Customer</h2>
-      <p>{order.customer.name}</p>
-      <p>{order.customer.email}</p>
-      <p>{order.customer.phone}</p>
+      <p data-testid={`order-confirmation-name`}>{order.customer.name}</p>
+      <p data-testid={`order-confirmation-email`}>{order.customer.email}</p>
+      <p data-testid={`order-confirmation-phone`}>{order.customer.phone}</p>
 
       <h2>Items</h2>
       {order.order.items.map((item) => (
-        <div key={item.id}>
-          <p>
+        <div data-testid={`order-confirmation-item-${item.id}`} key={item.id}>
+          <p data-testid={`order-confirmation-item-quantity-name-${item.id}`}>
             {item.quantity} × {item.name}
           </p>
-          <p>{formatPrice(item.priceCents * item.quantity)}</p>
+          <p data-testid={`order-confirmation-item-price-${item.id}`}>
+            {formatPrice(item.priceCents * item.quantity)}
+          </p>
         </div>
       ))}
 
       {order.kitchenSummary ? (
         <>
           <h2>AI Kitchen Summary</h2>
-          <p>{order.kitchenSummary}</p>
+          <p data-testid={`order-confirmation-kitchen-summary`}>
+            {order.kitchenSummary}
+          </p>
         </>
       ) : null}
 
       <h2>Total</h2>
-      <p>{formatPrice(order.order.totalCents)}</p>
+      <p data-testid={`order-confirmation-total-price`}>
+        {formatPrice(order.order.totalCents)}
+      </p>
     </main>
   );
 }
