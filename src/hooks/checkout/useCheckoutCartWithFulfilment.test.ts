@@ -14,7 +14,8 @@ const pizza = {
   description: '',
   priceCents: 1299,
   allergens: [],
-  available: true
+  available: true,
+  image: ''
 };
 
 beforeEach(() => {
@@ -119,7 +120,7 @@ describe('useCheckoutCartWithFulfilment', () => {
       ({ fulfilmentType }) => useCheckoutCartWithFulfilment({ fulfilmentType }),
       {
         initialProps: {
-          fulfilmentType: 'delivery' as const
+          fulfilmentType: 'delivery' as 'delivery' | 'collection'
         }
       }
     );

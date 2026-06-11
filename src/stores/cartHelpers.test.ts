@@ -38,8 +38,6 @@ function createCartState(overrides: Partial<CartState> = {}): CartState {
     removeItem: () => undefined,
     updateQuantity: () => undefined,
     clearCart: () => undefined,
-    getItems: () => [],
-    subtotalCents: () => 0,
     ...overrides
   };
 }

@@ -1,5 +1,5 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckoutSchema } from '@/schemas/checkout';
@@ -9,8 +9,11 @@ import FulfilmentFields from './FulfilmentFields';
 import PaymentFields from './PaymentFields';
 import { useCheckoutCartWithFulfilment } from '@/hooks/checkout/useCheckoutCartWithFulfilment';
 import type { CheckoutFormData } from '@/schemas/checkout';
+import { useState } from 'react';
 
 export default function CheckoutForm() {
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -43,6 +46,7 @@ export default function CheckoutForm() {
   } = useCheckoutCartWithFulfilment({ fulfilmentType });
 
   const doHandleSubmit = handleSubmit(async (data: CheckoutFormData) => {
+    setSubmitError(null);
     const orderData = {
       items: items.map((item) => ({
         id: item.id,
@@ -54,9 +58,26 @@ export default function CheckoutForm() {
       deliveryChargeCents,
       totalCents
     };
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    console.log('Fake checkout submitted:', { data, order: orderData }); // codesmell. Replace with real submission logic.
+
+    const response = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        customer: data,
+        order: orderData
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      setSubmitError(result.message ?? 'Checkout failed');
+      return;
+    }
     clearCart();
+    router.push(`/order-confirmation/${result.orderId}`);
   });
 
   return (
@@ -79,7 +100,11 @@ export default function CheckoutForm() {
 
         <PaymentFields register={register} errors={errors} />
         <hr />
-
+        {submitError ? (
+          <p data-testid="checkout-form-submit-error" role="alert">
+            {submitError}
+          </p>
+        ) : null}
         <button type="submit" disabled={isSubmitting || isCartEmpty}>
           {isSubmitting ? 'Placing order...' : 'Place order'}
         </button>
