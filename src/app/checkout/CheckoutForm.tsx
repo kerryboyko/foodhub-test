@@ -9,8 +9,10 @@ import FulfilmentFields from './FulfilmentFields';
 import PaymentFields from './PaymentFields';
 import { useCheckoutCartWithFulfilment } from '@/hooks/checkout/useCheckoutCartWithFulfilment';
 import type { CheckoutFormData } from '@/schemas/checkout';
+import { useState } from 'react';
 
 export default function CheckoutForm() {
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const router = useRouter();
   const {
     register,
@@ -44,6 +46,7 @@ export default function CheckoutForm() {
   } = useCheckoutCartWithFulfilment({ fulfilmentType });
 
   const doHandleSubmit = handleSubmit(async (data: CheckoutFormData) => {
+    setSubmitError(null);
     const orderData = {
       items: items.map((item) => ({
         id: item.id,
@@ -70,7 +73,8 @@ export default function CheckoutForm() {
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.message ?? 'Checkout failed');
+      setSubmitError(result.message ?? 'Checkout failed');
+      return;
     }
     clearCart();
     router.push(`/order-confirmation/${result.orderId}`);
@@ -96,7 +100,11 @@ export default function CheckoutForm() {
 
         <PaymentFields register={register} errors={errors} />
         <hr />
-
+        {submitError ? (
+          <p data-testid="checkout-form-submit-error" role="alert">
+            {submitError}
+          </p>
+        ) : null}
         <button type="submit" disabled={isSubmitting || isCartEmpty}>
           {isSubmitting ? 'Placing order...' : 'Place order'}
         </button>

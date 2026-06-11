@@ -186,4 +186,70 @@ describe('CheckoutForm', () => {
       );
     });
   });
+  it('displays an error when checkout fails', async () => {
+    const user = userEvent.setup();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({
+          message: 'Payment failed'
+        })
+      })
+    );
+
+    render(<CheckoutForm />);
+
+    await user.type(screen.getByLabelText(/name/i), 'Kerry Ann');
+    await user.type(screen.getByLabelText(/phone/i), '0871234567');
+    await user.type(screen.getByLabelText(/email/i), 'kerry@example.com');
+
+    await user.click(screen.getByRole('radio', { name: /collection/i }));
+
+    await user.type(screen.getByLabelText(/credit card/i), '4242424242424242');
+    await user.type(screen.getByLabelText(/expiration date/i), '12/30');
+    await user.type(screen.getByLabelText(/cvc code/i), '123');
+
+    await user.click(screen.getByRole('button', { name: /place order/i }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Payment failed'
+    );
+
+    expect(clearCart).not.toHaveBeenCalled();
+    expect(routerMocks.push).not.toHaveBeenCalled();
+  });
+  it('displays the fallback checkout error when the API does not return a message', async () => {
+    const user = userEvent.setup();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        json: async () => ({})
+      })
+    );
+
+    render(<CheckoutForm />);
+
+    await user.type(screen.getByLabelText(/name/i), 'Kerry Ann');
+    await user.type(screen.getByLabelText(/phone/i), '0871234567');
+    await user.type(screen.getByLabelText(/email/i), 'kerry@example.com');
+
+    await user.click(screen.getByRole('radio', { name: /collection/i }));
+
+    await user.type(screen.getByLabelText(/credit card/i), '4242424242424242');
+    await user.type(screen.getByLabelText(/expiration date/i), '12/30');
+    await user.type(screen.getByLabelText(/cvc code/i), '123');
+
+    await user.click(screen.getByRole('button', { name: /place order/i }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Checkout failed'
+    );
+
+    expect(clearCart).not.toHaveBeenCalled();
+    expect(routerMocks.push).not.toHaveBeenCalled();
+  });
 });
