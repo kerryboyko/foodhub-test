@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import OrderConfirmationPage from './page';
 import { getOrderById } from '@/app/api/checkout/getOrderById';
+import { Order } from '@/schemas/order';
 
 vi.mock('@/app/api/checkout/getOrderById', () => ({
   getOrderById: vi.fn()
@@ -45,7 +46,7 @@ const mockOrder = {
   },
   kitchenSummary:
     'Prepare 2 vegetable spring rolls for delivery. Customer requested no onions.'
-};
+} as Order;
 
 describe('OrderConfirmationPage', () => {
   beforeEach(() => {
