@@ -1,7 +1,7 @@
 // src/app/api/checkout/route.test.ts
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CheckoutFormData } from '@/schemas/checkout';
+import type { CheckoutRequestData } from '@/schemas/checkoutRequest';
 
 const mocks = vi.hoisted(() => ({
   saveOrder: vi.fn()
@@ -19,41 +19,56 @@ describe('POST /api/checkout', () => {
     vi.clearAllMocks();
   });
 
-  it('returns 201 and the saved order for a valid checkout', async () => {
-    const checkout = {
-      name: 'Bob',
-      email: 'bob@example.com',
-      phone: '555-1234',
-      fulfilmentType: 'delivery',
-      addressLine1: '123 Test Street',
-      postcode: 'D01 TEST',
-      creditCard: '4111111111111111',
-      ccExpiration: '12/30',
-      ccCVCcode: '123'
-    } satisfies CheckoutFormData;
+  it('returns 201 and the order ID for a valid checkout', async () => {
+    const checkoutRequest = {
+      customer: {
+        name: 'Bob',
+        email: 'bob@example.com',
+        phone: '555-1234',
+        fulfilmentType: 'delivery',
+        addressLine1: '123 Test Street',
+        postcode: 'D01 TEST',
+        creditCard: '4111111111111111',
+        ccExpiration: '12/30',
+        ccCVCcode: '123'
+      },
+      order: {
+        items: [
+          {
+            id: 'item_1001',
+            name: 'Vegetable Spring Rolls',
+            priceCents: 595,
+            quantity: 2
+          }
+        ],
+        subtotalCents: 1190,
+        deliveryChargeCents: 0,
+        totalCents: 1190
+      }
+    } satisfies CheckoutRequestData;
 
-    const order = {
+    const savedOrder = {
       id: 'test-order-id',
       createdAt: '2026-06-11T12:00:00.000Z',
-      ...checkout
+      ...checkoutRequest
     };
 
-    mocks.saveOrder.mockResolvedValue(order);
+    mocks.saveOrder.mockResolvedValue(savedOrder);
 
     const request = new Request('http://localhost/api/checkout', {
       method: 'POST',
-      body: JSON.stringify(checkout)
+      body: JSON.stringify(checkoutRequest)
     });
 
     const response = await POST(request);
     const body = await response.json();
 
     expect(response.status).toBe(201);
-    expect(saveOrder).toHaveBeenCalledWith(checkout);
+    expect(saveOrder).toHaveBeenCalledWith(checkoutRequest);
 
     expect(body).toEqual({
       message: 'Checkout successful',
-      order
+      orderId: 'test-order-id'
     });
   });
 
@@ -61,8 +76,13 @@ describe('POST /api/checkout', () => {
     const request = new Request('http://localhost/api/checkout', {
       method: 'POST',
       body: JSON.stringify({
-        name: '',
-        fulfilmentType: 'teleportation'
+        customer: {
+          name: '',
+          fulfilmentType: 'teleportation'
+        },
+        order: {
+          items: []
+        }
       })
     });
 
@@ -77,15 +97,30 @@ describe('POST /api/checkout', () => {
   });
 
   it('returns 500 if saving the order fails', async () => {
-    const checkout = {
-      name: 'Bob',
-      email: 'bob@example.com',
-      phone: '555-1234',
-      fulfilmentType: 'collection',
-      creditCard: '4111111111111111',
-      ccExpiration: '12/30',
-      ccCVCcode: '123'
-    } satisfies CheckoutFormData;
+    const checkoutRequest = {
+      customer: {
+        name: 'Bob',
+        email: 'bob@example.com',
+        phone: '555-1234',
+        fulfilmentType: 'collection',
+        creditCard: '4111111111111111',
+        ccExpiration: '12/30',
+        ccCVCcode: '123'
+      },
+      order: {
+        items: [
+          {
+            id: 'item_1001',
+            name: 'Vegetable Spring Rolls',
+            priceCents: 595,
+            quantity: 2
+          }
+        ],
+        subtotalCents: 1190,
+        deliveryChargeCents: 0,
+        totalCents: 1190
+      }
+    } satisfies CheckoutRequestData;
 
     mocks.saveOrder.mockRejectedValue(new Error('Disk exploded'));
 
@@ -95,7 +130,7 @@ describe('POST /api/checkout', () => {
 
     const request = new Request('http://localhost/api/checkout', {
       method: 'POST',
-      body: JSON.stringify(checkout)
+      body: JSON.stringify(checkoutRequest)
     });
 
     const response = await POST(request);

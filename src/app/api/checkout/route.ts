@@ -3,14 +3,14 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { CheckoutSchema } from '@/schemas/checkout';
+import { CheckoutRequestSchema } from '@/schemas/checkoutRequest';
 import { saveOrder } from './saveOrder';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const result = CheckoutSchema.safeParse(body);
+    const result = CheckoutRequestSchema.safeParse(body);
 
     if (!result.success) {
       return NextResponse.json(
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         message: 'Checkout successful',
-        order
+        orderId: order.id
       },
       { status: 201 }
     );

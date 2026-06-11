@@ -1,12 +1,10 @@
-import { z } from 'zod';
+import z from 'zod';
 import { CheckoutSchema } from './checkout';
 import { OrderSummarySchema } from './orderSummary';
 
-export const OrderSchema = z.object({
-  id: z.string(),
-  createdAt: z.string(),
+export const CheckoutRequestSchema = z.object({
   customer: CheckoutSchema,
   order: OrderSummarySchema
 });
 
-export type Order = z.infer<typeof OrderSchema>;
+export type CheckoutRequestData = z.infer<typeof CheckoutRequestSchema>;

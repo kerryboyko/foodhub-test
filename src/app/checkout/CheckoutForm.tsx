@@ -1,5 +1,5 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckoutSchema } from '@/schemas/checkout';
@@ -11,6 +11,7 @@ import { useCheckoutCartWithFulfilment } from '@/hooks/checkout/useCheckoutCartW
 import type { CheckoutFormData } from '@/schemas/checkout';
 
 export default function CheckoutForm() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -54,9 +55,25 @@ export default function CheckoutForm() {
       deliveryChargeCents,
       totalCents
     };
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    console.log('Fake checkout submitted:', { data, order: orderData }); // codesmell. Replace with real submission logic.
+
+    const response = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        customer: data,
+        order: orderData
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message ?? 'Checkout failed');
+    }
     clearCart();
+    router.push(`/order-confirmation/${result.orderId}`);
   });
 
   return (

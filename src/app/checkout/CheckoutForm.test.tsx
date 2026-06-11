@@ -1,13 +1,19 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 
 import CheckoutForm from './CheckoutForm';
 import { useCheckoutCartWithFulfilment } from '@/hooks/checkout/useCheckoutCartWithFulfilment';
 
-// This tests the checkout flow, but since useCheckoutCartWithFulfilment already has
-// it's own hook tests, we choose to mock the hook and just
-// focuses on rendering and submit behavior.
+const routerMocks = vi.hoisted(() => ({
+  push: vi.fn()
+}));
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: routerMocks.push
+  })
+}));
 
 vi.mock('@/hooks/checkout/useCheckoutCartWithFulfilment');
 
@@ -17,32 +23,47 @@ const mockUseCheckoutCartWithFulfilment = vi.mocked(
 
 const clearCart = vi.fn();
 
-beforeEach(() => {
-  vi.clearAllMocks();
-
-  mockUseCheckoutCartWithFulfilment.mockReturnValue({
-    items: [
-      {
-        id: 'pizza-1',
-        name: 'Pepperoni Pizza',
-        description: '',
-        priceCents: 1299,
-        allergens: [],
-        available: true,
-        quantity: 2,
-        image: ''
-      }
-    ],
-    subtotalCents: 2598,
-    clearCart,
-    totalCents: 3097,
-    deliveryChargeCents: 499,
-    isCartEmpty: false,
-    deliveryFeeDisplay: 'Delivery: €4.99'
-  });
-});
-
 describe('CheckoutForm', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          message: 'Checkout successful',
+          orderId: 'test-order-id'
+        })
+      })
+    );
+
+    mockUseCheckoutCartWithFulfilment.mockReturnValue({
+      items: [
+        {
+          id: 'pizza-1',
+          name: 'Pepperoni Pizza',
+          description: '',
+          priceCents: 1299,
+          allergens: [],
+          available: true,
+          quantity: 2,
+          image: ''
+        }
+      ],
+      subtotalCents: 2598,
+      clearCart,
+      totalCents: 3097,
+      deliveryChargeCents: 499,
+      isCartEmpty: false,
+      deliveryFeeDisplay: 'Delivery: €4.99'
+    });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it('renders checkout totals and form fields', () => {
     render(<CheckoutForm />);
 
@@ -57,6 +78,7 @@ describe('CheckoutForm', () => {
     expect(
       screen.getByRole('radio', { name: /delivery/i })
     ).toBeInTheDocument();
+
     expect(
       screen.getByRole('radio', { name: /collection/i })
     ).toBeInTheDocument();
@@ -98,9 +120,8 @@ describe('CheckoutForm', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('submits a valid collection order and clears the cart', async () => {
+  it('submits a valid collection order, clears the cart, and redirects', async () => {
     const user = userEvent.setup();
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
     render(<CheckoutForm />);
 
@@ -117,24 +138,52 @@ describe('CheckoutForm', () => {
     await user.click(screen.getByRole('button', { name: /place order/i }));
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Fake checkout submitted:',
+      expect(fetch).toHaveBeenCalledWith(
+        '/api/checkout',
         expect.objectContaining({
-          data: expect.objectContaining({
-            name: 'Kerry Ann',
-            phone: '0871234567',
-            email: 'kerry@example.com',
-            fulfilmentType: 'collection'
-          }),
-          order: expect.objectContaining({
-            subtotalCents: 2598,
-            deliveryChargeCents: 499,
-            totalCents: 3097
-          })
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: expect.any(String)
         })
       );
     });
 
-    expect(clearCart).toHaveBeenCalled();
+    const [, options] = vi.mocked(fetch).mock.calls[0];
+    const payload = JSON.parse(options?.body as string);
+
+    expect(payload).toEqual({
+      customer: expect.objectContaining({
+        name: 'Kerry Ann',
+        phone: '0871234567',
+        email: 'kerry@example.com',
+        fulfilmentType: 'collection',
+        creditCard: '4242424242424242',
+        ccExpiration: '12/30',
+        ccCVCcode: '123'
+      }),
+      order: {
+        items: [
+          {
+            id: 'pizza-1',
+            name: 'Pepperoni Pizza',
+            priceCents: 1299,
+            quantity: 2
+          }
+        ],
+        subtotalCents: 2598,
+        deliveryChargeCents: 499,
+        totalCents: 3097
+      }
+    });
+
+    expect(clearCart).toHaveBeenCalledOnce();
+
+    await waitFor(() => {
+      expect(routerMocks.push).toHaveBeenCalledWith(
+        '/order-confirmation/test-order-id'
+      );
+    });
   });
 });

@@ -1,10 +1,10 @@
 import * as fs from 'fs/promises';
-import { ensureOrdersFile } from './ensureOrdersFile.js';
-import { ordersFilePath } from './ordersFilePath.js';
-import type { CheckoutFormData } from '@/schemas/checkout.js';
-import type { Order } from '@/schemas/order.js';
+import { ensureOrdersFile } from './ensureOrdersFile';
+import { ordersFilePath } from './ordersFilePath';
+import type { CheckoutRequestData } from '@/schemas/checkoutRequest';
+import type { Order } from '@/schemas/order';
 
-export async function saveOrder(checkout: CheckoutFormData): Promise<Order> {
+export async function saveOrder(checkout: CheckoutRequestData): Promise<Order> {
   await ensureOrdersFile();
 
   const file = await fs.readFile(ordersFilePath, 'utf8');
