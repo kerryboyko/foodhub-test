@@ -8,7 +8,7 @@ export default defineConfig({
     trace: 'on-first-retry'
   },
   webServer: {
-    command: 'pnpm dev',
+    command: 'OPENAI_API_KEY= pnpm dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI
   },
