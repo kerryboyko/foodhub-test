@@ -1,5 +1,4 @@
 import type { MenuItem } from '@/schemas/menu';
-import Image from 'next/image';
 import styles from './Item.module.scss';
 import { CartControl } from '@/components/CartControl';
 import Link from 'next/link';
@@ -17,11 +16,13 @@ export default function Item({
   return (
     <div key={id} className={styles.item} data-testid={`item-${id}`}>
       <h3 className={styles.item__name}>{name}</h3>
-      <Image
+      {/* I used a plain img element because the application
+         displays a small set of local assets with varying aspect ratios 
+         and does not benefit materially from Next Image optimization. - kab*/}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
         className={styles.item__image}
         src={image}
-        width={200}
-        height={150}
         alt={`${name}: ${description}`}
       />
       <p className={styles.item__description}>{description}</p>
