@@ -16,9 +16,9 @@ export default function Item({
   return (
     <div key={id} className={styles.item} data-testid={`item-${id}`}>
       <h3 className={styles.item__name}>{name}</h3>
-      {/* I used a plain img element because the application
-         displays a small set of local assets with varying aspect ratios 
-         and does not benefit materially from Next Image optimization. - kab*/}
+      {/* Local menu assets have varying aspect ratios, and this component 
+          intentionally preserves natural image height rather than forcing 
+          a fixed thumbnail ratio. - kab*/}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         className={styles.item__image}
