@@ -1,119 +1,197 @@
-Next.js
+# FoodHub Code Test
 
-No Tailwind (Tailwind is essentially syntactic sugar for CSS, but eliminates specificity by storing everything at 'class' level specificity. In practice, I've found it creates hard to debug CSS errors.)
+A full-stack takeaway ordering demo built with **Next.js**, **TypeScript**, **Zod**, **Zustand**, **Vitest**, and **Playwright**.
 
-Yes React Compiler. I had not used this before but essentially it automatically memorizes parts of the code. Manual memorization clutters the code.
+The application displays a restaurant menu, lets users build a cart, complete a checkout flow, process a fake payment, generate an AI-assisted kitchen summary, and view an order confirmation page.
 
-I'm in favor of anything which reduces the amount of boilerplate that needs to be written, as additional code = more places for bugs to hide. For a simple app such as this, it's overkill, but I also don't see a reason _not_ to use it. One note is that to use React Compiler, it assumes you're following the Rules of React, which is why ESLint is so important - it'll catch when you don't. https://www.debugbear.com/blog/react-compiler The tradeoff is that you need to use React Developer Tools Profile to investigate the issue rather than checking explicit React.memo, useMemo, or useCallback calls in your code. This, in the long term, makes debugging performance issues more challenging.
+## Features
 
-Because of my policy of: "Always try to learn something new on a code challenge," I weighed the tradeoffs and went with React Compiler.
+- Restaurant menu grouped by category
+- Cart management with quantity controls
+- Checkout form with runtime validation
+- Fake payment processing
+- Order confirmation page
+- AI-generated kitchen summary with safe fallback behavior
+- Unit, integration, and end-to-end test coverage
+- CI pipeline for linting, formatting, type checking, tests, build, and E2E tests
 
-### State management
+## Tech Stack
 
-Redux would be disproportionate for this exercise. The app only needs lightweight shared state for the cart and checkout flow, so I used Zustand with development-only debugging middleware. This provides observable state transitions without adding significant boilerplate.
+- **Framework:** Next.js
+- **Language:** TypeScript
+- **Validation:** Zod
+- **State Management:** Zustand
+- **Testing:** Vitest, React Testing Library, Playwright
+- **AI:** OpenAI API integration with local fallback
+- **CI:** GitHub Actions
 
-### React Compiler
+## Technology Choices
 
-I used React Compiler for the following reasons:
+### **SCSS/CSS Modules** were chosen instead of Tailwind CSS.
 
-- This is a greenfield project.
-- React Compiler is production-ready.
-- Manual useMemo, useCallback, and memo introduce complexity
-- Less code means fewer oppertunities for bugs and less cognative load.
+For this exercise I preferred component-scoped styles that keep styling concerns separate from markup and make visual changes easier to locate, review, and refactor.
 
-There are tradeoffs I'm aware of, see: https://www.debugbear.com/blog/react-compiler
+This approach also keeps the rendered markup focused on structure and accessibility concerns while avoiding an additional styling abstraction layer.
 
-### Runtime Validation at System Boundaries
+### **Next.js App Router instead of Vite + React SPA**
 
-While Typescript can help with catching type errors at compile time, Zod helps catch them at runtime.
+Next.js was chosen to provide a production-oriented application structure, routing, API endpoints, image optimization, and deployment model within a single framework. For this exercise it reduced the amount of infrastructure code required while still demonstrating full-stack concerns.
 
-### Vitest
+### **Zod instead of TypeScript-only validation**
 
-Fast unit and integration testing.
+TypeScript provides compile-time guarantees, but external inputs such as API requests require runtime validation. Zod was used to validate incoming data and establish a single source of truth for domain models.
 
-### Playwright
+### **Zustand instead of Redux**
 
-Realistic user-flow testing
+Zustand was chosen because the application requires a small amount of shared client-side state without the ceremony associated with Redux. The resulting implementation remains simple while preserving testability.
 
-### Github Actions
+### **AI Integration: Graceful degradation instead of hard dependency**
 
-Automated quality gates.
+AI functionality degrades gracefully when external services are unavailable, ensuring that the primary ordering workflow remains functional in local development, CI environments, and review scenarios.
 
-Added:
+### **Persistence: Local JSON storage instead of introducing a database**
 
-- Zustand
-- Zod
-- vitest
-- testinglibrary-react
-- plywright
-- prettier
+SQLite was considered as an alternative. However, introducing a database would have added infrastructure complexity without materially changing the business logic being demonstrated.
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+### **React Compiler**
 
-### IDE-side testing/local automation
+React Compiler was enabled to reduce the need for manual memoization patterns such as `useMemo` and `useCallback`, allowing components to remain focused on business logic rather than optimization boilerplate.
 
-Added
+### **Quality Gates**
 
-- Playwright for VSCode
-- Husky / Lint-staged
+Automated quality gates prevent commits and pull requests from bypassing linting, type checking, or automated tests.
 
-### Use Of AI in Development
+- Prettier was used alongside automatic formatting on save to maintain consistent code style.
 
-The menu was generated using AI tools, specifically ChatGPT.
+- Husky pre-commit hooks were configured to prevent commits that fail linting or automated tests.
 
-There were also a number of things that I "used to know" how to do in my career that I have since forgotten the implementation details of; ChatGPT helped me with those details.
+- Vitest was used for unit and integration testing, with built-in coverage reporting used to identify untested areas of the codebase.
 
-### Notes for self
+- Playwright was used to validate end-to-end user journeys against a running application.
 
-The Quality Pipeline:
+- Semantic HTML and accessible form controls were preferred where practical, improving both usability and testability.
 
-Editor
-↓
-Format on save
-↓
-Pre-commit checks
-↓
-Type safety
-↓
-Unit tests
-↓
-Integration tests
-↓
-E2E tests
-↓
-CI
+- Stable `data-testid` attributes were used where appropriate to reduce test brittleness and avoid coupling automated tests to presentation details.
+
+- GitHub Actions were used as a CI/CD solution and final verification step.
+
+## Requirements
+
+- Node.js 22+
+- pnpm
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run the development server:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Then open:
 
-## Learn More
+```text
+http://localhost:3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The AI kitchen summary feature can use the OpenAI API when an API key is available.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Create a `.env.local` file:
 
-## Deploy on Vercel
+```bash
+OPENAI_API_KEY=your_api_key_here
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If no API key is provided, the app falls back to a deterministic local kitchen summary. This keeps the application usable in local development, CI, and review environments.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Scripts
+
+```bash
+pnpm dev
+```
+
+Starts the development server.
+
+```bash
+pnpm build
+```
+
+Builds the production application.
+
+```bash
+pnpm start
+```
+
+Starts the production server.
+
+```bash
+pnpm lint
+```
+
+Runs ESLint.
+
+```bash
+pnpm format:check
+```
+
+Checks formatting.
+
+```bash
+pnpm typecheck
+```
+
+Runs TypeScript checks.
+
+```bash
+pnpm test
+```
+
+Runs unit and integration tests.
+
+```bash
+pnpm test:e2e
+```
+
+Runs Playwright end-to-end tests.
+
+## Testing Strategy
+
+This project uses multiple layers of testing:
+
+- **Unit tests** for isolated components and utility logic
+- **Integration tests** for user-facing flows and API behavior
+- **End-to-end tests** for the full ordering journey, from menu to checkout confirmation
+
+The goal is not just to prove that individual functions work, but to verify that the core business flow behaves correctly from the user's perspective.
+
+## CI
+
+The GitHub Actions workflow runs:
+
+- Type checking
+- Linting
+- Formatting checks
+- Unit/integration tests
+- Production build
+- Playwright E2E tests
+
+This is intended to catch regressions across both implementation correctness and user-facing behavior.
+
+## Design Goals
+
+This exercise was designed to demonstrate:
+
+- Runtime validation of external inputs
+- Layered automated testing
+- Maintainable state management
+- Graceful degradation of external services
+- Quality-focused development workflows
+- Clear separation of concerns

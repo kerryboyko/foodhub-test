@@ -5,7 +5,7 @@ export default async function CartPage() {
   return (
     <main>
       <>
-        <div>Checkout</div>
+        <h2>Checkout</h2>
         <hr />
         <div>
           <div>
