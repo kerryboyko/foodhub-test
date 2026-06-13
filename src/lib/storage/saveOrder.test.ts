@@ -138,7 +138,7 @@ describe('saveOrder', () => {
     const storedAlice = {
       id: 'test-order-id',
       createdAt: '2026-06-11T12:00:00.000Z',
-      customer: toStoredCustomer(alice.customer),
+      customer: toStoredCustomer(alice.customer as any),
       order: alice.order,
       kitchenSummary: null
     };
