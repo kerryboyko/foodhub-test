@@ -1,29 +1,10 @@
 import { formatPrice } from '@/lib/formatPrice';
+import styles from './checkoutpage.module.scss';
 
-interface CheckoutTotalsProps {
-  subtotalCents: number;
-  totalCents: number;
-  deliveryFeeText: string | null;
-}
-
-export default function CheckoutTotals({
-  subtotalCents,
-  totalCents,
-  deliveryFeeText
-}: CheckoutTotalsProps) {
+export default function CheckoutTotals({ totalCents }: { totalCents: number }) {
   return (
-    <>
-      <div data-testid="checkout-totals-subtotal">
-        Subtotal: {formatPrice(subtotalCents)}
-      </div>
-      {deliveryFeeText ? (
-        <div data-testid="checkout-totals-delivery-fee-text">
-          {deliveryFeeText}
-        </div>
-      ) : null}
-      <div data-testid="checkout-totals-total">
-        Total: {formatPrice(totalCents)}
-      </div>
-    </>
+    <div className={styles.total} data-testid="checkout-totals-total">
+      Total: {formatPrice(totalCents)}
+    </div>
   );
 }

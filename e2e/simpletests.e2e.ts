@@ -14,16 +14,11 @@ test('updates totals when an item is removed from the cart', async ({
   await page.getByTestId('cart-control-add-item_1001').click();
   await page.getByTestId('cart-control-add-item_2002').click();
 
-  await page.getByRole('link', { name: 'Go To Cart' }).first().click();
-
   await expect(page.locator('body')).toContainText('Subtotal: €19.45');
 
   await page.getByTestId('cart-control-remove-item_2002').click();
 
   await expect(page.locator('body')).toContainText('Subtotal: €5.95');
-  await expect(
-    page.getByRole('heading', { name: 'Thai Green Chicken Curry' })
-  ).not.toBeVisible();
 });
 
 test('does not require address fields for collection orders', async ({
@@ -32,10 +27,10 @@ test('does not require address fields for collection orders', async ({
   await page.goto('/menu');
 
   await page.getByTestId('cart-control-add-item_1001').click();
-  await page.getByRole('link', { name: 'Go To Cart' }).first().click();
-  await page.getByRole('link', { name: 'Go to checkout' }).click();
+  await page.getByRole('link', { name: 'Go To Checkout' }).click();
 
-  await page.getByRole('radio', { name: 'Collection' }).check();
+  await expect(page).toHaveURL(/\/checkout$/);
+  await page.getByTestId('fulfilment-fields-radio-collection').click();
 
   await expect(
     page.getByRole('textbox', { name: 'Address Line 1' })
@@ -51,12 +46,13 @@ test('allows the user to navigate back from checkout to the cart', async ({
   await page.goto('/menu');
 
   await page.getByTestId('cart-control-add-item_1001').click();
-  await page.getByRole('link', { name: 'Go To Cart' }).first().click();
-  await page.getByRole('link', { name: 'Go to checkout' }).click();
+  await page.getByRole('link', { name: 'Go To Checkout' }).click();
 
-  await page.getByRole('link', { name: 'Change Order' }).click();
+  await expect(page).toHaveURL(/\/checkout$/);
 
-  await expect(page).toHaveURL(/\/cart$/);
+  await page.getByRole('link', { name: 'Change Your Order' }).click();
+
+  await expect(page).toHaveURL(/\/menu$/);
   await expect(
     page.getByRole('heading', { name: 'Vegetable Spring Rolls' })
   ).toBeVisible();

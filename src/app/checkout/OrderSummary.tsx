@@ -19,7 +19,6 @@ export default function OrderSummary() {
             </p>
           </div>
         ))}
-        <hr />
       </>
     </main>
   );

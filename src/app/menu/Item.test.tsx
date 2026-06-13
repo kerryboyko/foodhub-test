@@ -44,8 +44,31 @@ describe('Item', () => {
     ).toBeInTheDocument();
 
     expect(screen.getByText(/Price: €10.99/)).toBeInTheDocument();
+    expect(screen.queryByTestId('menu-item-allergens')).toBeInTheDocument();
+
     expect(screen.getByText('Allergens: gluten, milk')).toBeInTheDocument();
 
+    expect(
+      screen.getByAltText(
+        'Big Beefy Burger: A smoky beef burger with cheddar and pickles.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('renders item details without allergens', () => {
+    render(<Item {...{ ...baseItem, allergens: [] }} />);
+
+    expect(screen.getByTestId('item-burger-1')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Big Beefy Burger' })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText('A smoky beef burger with cheddar and pickles.')
+    ).toBeInTheDocument();
+
+    expect(screen.getByText(/Price: €10.99/)).toBeInTheDocument();
+    expect(screen.queryByTestId('menu-item-allergens')).not.toBeInTheDocument();
     expect(
       screen.getByAltText(
         'Big Beefy Burger: A smoky beef burger with cheddar and pickles.'
@@ -59,11 +82,5 @@ describe('Item', () => {
     expect(screen.getByText(/Price: €10.99/)).toHaveTextContent(
       'Price: €10.99 (Unavailable)'
     );
-  });
-
-  it('shows None when there are no allergens', () => {
-    render(<Item {...baseItem} allergens={[]} />);
-
-    expect(screen.getByText('Allergens: None')).toBeInTheDocument();
   });
 });

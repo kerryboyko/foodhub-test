@@ -1,5 +1,5 @@
 .page {
-  --background: #fafafa;
+  --color-bg: #fafafa;
   --foreground: #fff;
 
   --text-primary: #000;
@@ -15,7 +15,7 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  background-color: var(--color-bg);
 }
 
 .main {
@@ -86,7 +86,7 @@
 
 a.primary {
   background: var(--text-primary);
-  color: var(--background);
+  color: var(--color-bg);
   gap: 8px;
 }
 
@@ -129,7 +129,7 @@ a.secondary {
   }
 
   .page {
-    --background: #000;
+    --color-bg: #000;
     --foreground: #000;
 
     --text-primary: #ededed;

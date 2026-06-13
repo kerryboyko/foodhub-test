@@ -1,7 +1,7 @@
 // src/app/api/order-confirmation/[orderId]/route.ts
 
 import { NextResponse } from 'next/server';
-import { getOrderById } from '../../checkout/getOrderById';
+import { getOrderById } from '@/lib/storage/getOrderById';
 
 type RouteParams = {
   params: Promise<{
@@ -11,7 +11,6 @@ type RouteParams = {
 
 export async function GET(_request: Request, { params }: RouteParams) {
   const { orderId } = await params;
-
   const order = await getOrderById(orderId);
 
   if (!order) {

@@ -1,5 +1,5 @@
 import * as fs from 'fs/promises';
-import { ordersFilePath } from './ordersFilePath';
+import { ordersFilePath } from '@/lib/storage/ordersFilePath';
 import type { Order } from '@/schemas/order';
 
 export async function getOrderById(orderId: string): Promise<Order | null> {

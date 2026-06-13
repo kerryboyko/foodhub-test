@@ -23,11 +23,11 @@ describe('FulfilmentFields', () => {
     );
 
     expect(
-      screen.getByRole('radio', { name: /delivery/i })
+      screen.getByTestId('fulfilment-fields-radio-delivery')
     ).toBeInTheDocument();
 
     expect(
-      screen.getByRole('radio', { name: /collection/i })
+      screen.getByTestId('fulfilment-fields-radio-collection')
     ).toBeInTheDocument();
   });
 
@@ -70,7 +70,9 @@ describe('FulfilmentFields', () => {
       />
     );
 
-    expect(screen.getByLabelText(/notes optional/i)).toBeInTheDocument();
+    expect(
+      screen.getByTestId('fulfillment-fields-notes-input')
+    ).toBeInTheDocument();
   });
 
   it('renders validation errors', () => {

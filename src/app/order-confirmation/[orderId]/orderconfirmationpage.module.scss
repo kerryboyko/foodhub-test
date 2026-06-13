@@ -1,0 +1,81 @@
+.orderconfirmationpage {
+  width: min(100%, 800px);
+  padding: 2rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-surface);
+  box-shadow: 0 0.5rem 2rem rgb(0 0 0 / 0.08);
+
+  &__container {
+    min-width: 360px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem 12rem;
+  }
+
+  &__heading {
+    margin: 1.5rem 0 0.75rem;
+    color: var(--color-text);
+
+    &:first-child {
+      margin-top: 0;
+      font-size: 2rem;
+    }
+  }
+
+  &__orderId {
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: var(--color-surface-alt);
+    color: var(--color-text-muted);
+    font-family: monospace;
+    overflow-wrap: anywhere;
+  }
+
+  &__customerName,
+  &__customerEmail,
+  &__customerPhone {
+    margin: 0.25rem 0;
+    color: var(--color-text);
+  }
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+
+    &__details,
+    &__price {
+      margin: 0;
+    }
+
+    &__price {
+      font-weight: 600;
+      white-space: nowrap;
+    }
+  }
+
+  &__deliveryCharge {
+    margin: 0;
+  }
+
+  &__total {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+}
+
+@media (max-width: 480px) {
+  .orderconfirmationpage {
+    padding: 1.25rem;
+
+    &__item {
+      align-items: flex-start;
+    }
+  }
+}

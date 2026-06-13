@@ -7,7 +7,7 @@ export const OrderSchema = z.object({
   createdAt: z.string(),
   customer: CheckoutSchema,
   order: OrderSummarySchema,
-  kitchenSummary: z.string().optional()
+  kitchenSummary: z.string().nullable().optional()
 });
 
 export type Order = z.infer<typeof OrderSchema>;

@@ -38,6 +38,15 @@ describe('OrderSchema', () => {
     expect(OrderSchema.parse(validOrder)).toEqual(validOrder);
   });
 
+  it('accepts a valid order with a nullable kitchenSummary field', () => {
+    const invalidOrder = {
+      ...validOrder,
+      kitchenSummary: null
+    };
+
+    expect(() => OrderSchema.parse(invalidOrder)).not.toThrow();
+  });
+
   it('accepts an order without a kitchen summary', () => {
     const { kitchenSummary: _kitchenSummary, ...orderWithoutKitchenSummary } =
       validOrder;

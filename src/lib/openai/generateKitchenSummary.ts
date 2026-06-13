@@ -12,7 +12,7 @@ export function factoryGenerateKitchenSummary() {
       createFallbackKitchenSummary(order);
   }
 
-  const openai = new OpenAI({ apiKey });
+  const openai = new OpenAI({ apiKey, maxRetries: 0, timeout: 5000 });
 
   return async (order: CheckoutRequestData) => {
     const promptData = {
@@ -25,7 +25,11 @@ export function factoryGenerateKitchenSummary() {
       },
       order: order.order
     };
-
+    // In production, AI summary generation should be queued as a background job
+    // after the order is created, so checkout confirmation is not blocked by
+    // model latency or third-party API failures.
+    // This path is included in order to satisfy the
+    // tech demo brief, however, that it incorporate AI.
     try {
       const response = await openai.responses.create({
         model: 'gpt-4.1-mini',
