@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { CheckoutRequestSchema } from '@/schemas/checkoutRequest';
-import { saveOrder } from './saveOrder';
+import { saveOrder } from '../../../lib/storage/saveOrder';
 
 export async function POST(request: Request) {
   try {
@@ -21,7 +21,6 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
     const order = await saveOrder(result.data);
 
     return NextResponse.json(

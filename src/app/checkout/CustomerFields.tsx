@@ -1,4 +1,5 @@
 import { CheckoutCommonProps } from './checkout.types';
+import styles from './checkoutpage.module.scss';
 
 export default function CustomerFields({
   register,
@@ -6,22 +7,40 @@ export default function CustomerFields({
 }: CheckoutCommonProps) {
   return (
     <>
-      <div>
-        <label htmlFor="name">Name</label>
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="name">
+          Name
+        </label>
         <input id="name" type="text" {...register('name')} />
-        {errors.name && <p>{errors.name.message}</p>}
+        {errors.name && (
+          <p data-testid="customer-fields-name-error" className={styles.error}>
+            {errors.name.message}
+          </p>
+        )}
       </div>
 
-      <div>
-        <label htmlFor="phone">Phone</label>
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="phone">
+          Phone
+        </label>
         <input id="phone" type="tel" {...register('phone')} />
-        {errors.phone && <p>{errors.phone.message}</p>}
+        {errors.phone && (
+          <p data-testid="customer-fields-phone-error" className={styles.error}>
+            {errors.phone.message}
+          </p>
+        )}
       </div>
 
-      <div>
-        <label htmlFor="email">Email</label>
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="email">
+          Email
+        </label>
         <input id="email" type="email" {...register('email')} />
-        {errors.email && <p>{errors.email.message}</p>}
+        {errors.email && (
+          <p data-testid="customer-fields-email-error" className={styles.error}>
+            {errors.email.message}
+          </p>
+        )}
       </div>
     </>
   );

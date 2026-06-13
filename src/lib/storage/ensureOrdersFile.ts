@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises';
 import path from 'path';
-import { ordersFilePath } from './ordersFilePath';
+import { ordersFilePath } from '@/lib/storage/ordersFilePath';
 
 export async function ensureOrdersFile() {
   await fs.mkdir(path.dirname(ordersFilePath), {

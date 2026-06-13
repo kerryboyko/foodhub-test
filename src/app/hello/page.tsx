@@ -14,7 +14,7 @@ async function getMessageFromApi() {
   const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
 
   const fetchUrl = `${protocol}://${host}/api/hello`;
-  console.log('Fetching menu from API at:', fetchUrl);
+
   const res = await fetch(fetchUrl, {
     cache: 'no-store'
   });

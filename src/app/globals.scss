@@ -1,0 +1,77 @@
+:root {
+  /* Backgrounds */
+
+  --color-bg: #f8f6f2;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f1ede7;
+
+  /* Typography */
+  --color-text: #2d2926;
+  --color-text-muted: #6f655e;
+
+  /* Borders */
+  --color-border: #ddd5cb;
+
+  /* Brand / CTA */
+  --color-primary: #d9480f;
+  --color-primary-hover: #c2410c;
+  --color-primary-active: #9a3412;
+
+  /* Success */
+  --color-success: #2f9e44;
+  --color-success-hover: #2b8a3e;
+
+  /* Validation Errors */
+  --color-danger: #c92a2a;
+  --color-danger-bg: #fff5f5;
+
+  /* Allergy Warnings */
+  --color-allergen: #7b2cbf;
+  --color-allergen-bg: #f3e8ff;
+
+  /* Availability */
+  --color-unavailable: #868e96;
+
+  /* Focus Ring */
+  --color-focus: #339af0;
+}
+
+html {
+  height: 100%;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  color: var(--color-text);
+  background: var(--color-bg);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  border: none;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}

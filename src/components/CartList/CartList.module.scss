@@ -1,0 +1,28 @@
+.cartList {
+  &__heading {
+    color: var(--color-text-muted);
+    padding-bottom: 0.25rem;
+  }
+  &__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 0.25rem;
+    font-size: 0.75rem;
+    &__icon {
+      padding-right: 0.5rem;
+      max-height: 0.75rem;
+    }
+  }
+  &__subtotal,
+  &__total {
+    padding: 0.25rem 0;
+    color: var(--color-text);
+  }
+  &__deliveryFee {
+    color: var(--color-text);
+    &__isFree {
+      color: var(--color-success);
+    }
+  }
+}

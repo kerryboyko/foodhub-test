@@ -1,0 +1,113 @@
+.checkoutpage {
+  &__container {
+    min-width: 360px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-bottom: 8rem;
+  }
+  max-width: 800px;
+  min-width: 360px;
+  &__heading {
+    padding: 1rem 0;
+  }
+  &__changeOrder,
+  &__placeOrder {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    margin: 0.5rem 0;
+    &__link,
+    &__submitButton {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: right;
+      background-color: var(--color-primary);
+      color: var(--color-surface-alt);
+      padding: 0.25rem 1rem;
+      border-radius: 1rem;
+      &:hover {
+        background-color: var(--color-primary-hover);
+      }
+      &:active {
+        background-color: var(--color-primary-active);
+      }
+      &:disabled {
+        background-color: var(--color-unavailable);
+        color: var(--color-text-muted);
+      }
+      &__icon {
+        margin-right: 0.25rem;
+      }
+    }
+  }
+  input:not([type='checkbox']):not([type='radio']),
+  textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    font-size: 1rem;
+  }
+  .field {
+    margin-bottom: 1rem;
+  }
+
+  .label {
+    display: block;
+    margin-bottom: 0.35rem;
+
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .error {
+    margin-top: 0.25rem;
+
+    color: var(--color-danger);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .total {
+    margin: 1rem 0;
+    font-size: 1.25rem;
+  }
+}
+
+.radioGroup {
+  display: grid;
+  gap: 0.75rem;
+  border: 0;
+  padding: 0;
+}
+
+.radioOption {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  padding: 0.75rem 1rem 0.75rem 0.5rem;
+  margin-right: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface);
+
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-primary);
+    background: var(--color-surface-alt);
+  }
+}
+
+.radioOption input {
+  width: auto;
+  accent-color: var(--color-primary);
+}
+
+.radioText {
+  font-weight: 500;
+}

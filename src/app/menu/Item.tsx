@@ -1,9 +1,7 @@
 import type { MenuItem } from '@/schemas/menu';
-import Image from 'next/image';
-import styles from './Item.module.scss';
-import { CartControl } from '@/components/CartControl';
-import Link from 'next/link';
+import CartControl from '@/components/CartControl/CartControl';
 import { formatPrice } from '@/lib/formatPrice';
+import styles from './Item.module.scss';
 
 export default function Item({
   id,
@@ -14,20 +12,25 @@ export default function Item({
   allergens,
   image
 }: MenuItem) {
+  const hasAllergens = Boolean(allergens.length);
   return (
     <div key={id} className={styles.item} data-testid={`item-${id}`}>
       <h3 className={styles.item__name}>{name}</h3>
-      <Image
+      {/* Local menu assets have varying aspect ratios, and this component 
+          intentionally preserves natural image height rather than forcing 
+          a fixed thumbnail ratio. - kab*/}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
         className={styles.item__image}
         src={image}
-        width={200}
-        height={150}
         alt={`${name}: ${description}`}
       />
       <p className={styles.item__description}>{description}</p>
-      <p className={styles.item__allergens}>
-        Allergens: {allergens.join(', ') || 'None'}
-      </p>
+      {hasAllergens ? (
+        <p data-testid="menu-item-allergens" className={styles.item__allergens}>
+          Allergens: {allergens.join(', ')}
+        </p>
+      ) : null}
       <p className={styles.item__price}>
         Price: {formatPrice(priceCents)}
         {available ? '' : ' (Unavailable)'}
@@ -43,9 +46,6 @@ export default function Item({
           image
         }}
       />
-      <div>
-        <Link href="/cart">Go To Cart</Link>
-      </div>
     </div>
   );
 }

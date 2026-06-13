@@ -67,20 +67,16 @@ describe('CheckoutForm', () => {
   it('renders checkout totals and form fields', () => {
     render(<CheckoutForm />);
 
-    expect(screen.getByText('Subtotal: €25.98')).toBeInTheDocument();
-    expect(screen.getByText('Delivery: €4.99')).toBeInTheDocument();
-    expect(screen.getByText('Total: €30.97')).toBeInTheDocument();
-
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/phone/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
 
     expect(
-      screen.getByRole('radio', { name: /delivery/i })
+      screen.getByTestId('fulfilment-fields-radio-collection')
     ).toBeInTheDocument();
 
     expect(
-      screen.getByRole('radio', { name: /collection/i })
+      screen.getByTestId('fulfilment-fields-radio-delivery')
     ).toBeInTheDocument();
 
     expect(screen.getByLabelText(/credit card/i)).toBeInTheDocument();
@@ -112,7 +108,11 @@ describe('CheckoutForm', () => {
     expect(screen.getByLabelText(/address line 1/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/postcode\/zipcode/i)).toBeInTheDocument();
 
-    await user.click(screen.getByRole('radio', { name: /collection/i }));
+    await user.click(screen.getByTestId('fulfilment-fields-radio-collection'));
+
+    expect(
+      screen.getByTestId('fulfilment-fields-radio-delivery')
+    ).toBeInTheDocument();
 
     expect(screen.queryByLabelText(/address line 1/i)).not.toBeInTheDocument();
     expect(
@@ -129,7 +129,10 @@ describe('CheckoutForm', () => {
     await user.type(screen.getByLabelText(/phone/i), '0871234567');
     await user.type(screen.getByLabelText(/email/i), 'kerry@example.com');
 
-    await user.click(screen.getByRole('radio', { name: /collection/i }));
+    await user.click(screen.getByTestId('fulfilment-fields-radio-collection'));
+    expect(
+      screen.getByTestId('fulfilment-fields-radio-delivery')
+    ).toBeInTheDocument();
 
     await user.type(screen.getByLabelText(/credit card/i), '4242424242424242');
     await user.type(screen.getByLabelText(/expiration date/i), '12/30');
@@ -205,7 +208,11 @@ describe('CheckoutForm', () => {
     await user.type(screen.getByLabelText(/phone/i), '0871234567');
     await user.type(screen.getByLabelText(/email/i), 'kerry@example.com');
 
-    await user.click(screen.getByRole('radio', { name: /collection/i }));
+    await user.click(screen.getByTestId('fulfilment-fields-radio-collection'));
+
+    expect(
+      screen.getByTestId('fulfilment-fields-radio-delivery')
+    ).toBeInTheDocument();
 
     await user.type(screen.getByLabelText(/credit card/i), '4242424242424242');
     await user.type(screen.getByLabelText(/expiration date/i), '12/30');
@@ -237,7 +244,11 @@ describe('CheckoutForm', () => {
     await user.type(screen.getByLabelText(/phone/i), '0871234567');
     await user.type(screen.getByLabelText(/email/i), 'kerry@example.com');
 
-    await user.click(screen.getByRole('radio', { name: /collection/i }));
+    await user.click(screen.getByTestId('fulfilment-fields-radio-collection'));
+
+    expect(
+      screen.getByTestId('fulfilment-fields-radio-delivery')
+    ).toBeInTheDocument();
 
     await user.type(screen.getByLabelText(/credit card/i), '4242424242424242');
     await user.type(screen.getByLabelText(/expiration date/i), '12/30');

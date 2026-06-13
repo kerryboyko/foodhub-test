@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GET } from './route';
-import { getOrderById } from '../../checkout/getOrderById';
+import { getOrderById } from '@/lib/storage/getOrderById';
 import { Order } from '@/schemas/order';
 
-vi.mock('../../checkout/getOrderById', () => ({
+vi.mock('@/lib/storage/getOrderById', () => ({
   getOrderById: vi.fn()
 }));
 

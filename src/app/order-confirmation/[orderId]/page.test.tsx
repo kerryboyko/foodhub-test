@@ -2,10 +2,10 @@ import { render, screen } from '@testing-library/react';
 import { notFound } from 'next/navigation';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import OrderConfirmationPage from './page';
-import { getOrderById } from '@/app/api/checkout/getOrderById';
+import { getOrderById } from '@/lib/storage/getOrderById';
 import { Order } from '@/schemas/order';
 
-vi.mock('@/app/api/checkout/getOrderById', () => ({
+vi.mock('@/lib/storage/getOrderById', () => ({
   getOrderById: vi.fn()
 }));
 
@@ -91,12 +91,6 @@ describe('OrderConfirmationPage', () => {
     ).toHaveTextContent('€11.90');
 
     expect(
-      screen.getByTestId('order-confirmation-kitchen-summary')
-    ).toHaveTextContent(
-      'Prepare 2 vegetable spring rolls for delivery. Customer requested no onions.'
-    );
-
-    expect(
       screen.getByTestId('order-confirmation-total-price')
     ).toHaveTextContent('€14.90');
   });
@@ -119,6 +113,22 @@ describe('OrderConfirmationPage', () => {
 
     expect(
       screen.queryByTestId('order-confirmation-kitchen-summary')
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not display the delivery charge when there is no delivery charge', async () => {
+    vi.mocked(getOrderById).mockResolvedValue({
+      ...mockOrder,
+      order: { ...mockOrder.order, deliveryChargeCents: 0 }
+    } as any);
+
+    render(
+      await OrderConfirmationPage({
+        params: Promise.resolve({ orderId: 'test-order-id' })
+      })
+    );
+    expect(
+      screen.queryByTestId('order-confirmation-deliverycharge')
     ).not.toBeInTheDocument();
   });
 

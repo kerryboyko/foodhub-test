@@ -7,12 +7,12 @@ const mocks = vi.hoisted(() => ({
   saveOrder: vi.fn()
 }));
 
-vi.mock('./saveOrder', () => ({
+vi.mock('@/lib/storage/saveOrder', () => ({
   saveOrder: mocks.saveOrder
 }));
 
 import { POST } from './route';
-import { saveOrder } from './saveOrder';
+import { saveOrder } from '@/lib/storage/saveOrder';
 
 describe('POST /api/checkout', () => {
   beforeEach(() => {

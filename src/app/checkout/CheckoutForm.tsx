@@ -10,10 +10,14 @@ import PaymentFields from './PaymentFields';
 import { useCheckoutCartWithFulfilment } from '@/hooks/checkout/useCheckoutCartWithFulfilment';
 import type { CheckoutFormData } from '@/schemas/checkout';
 import { useState } from 'react';
+import styles from './checkoutpage.module.scss';
+import { CreditCard } from 'lucide-react';
 
 export default function CheckoutForm() {
   const [submitError, setSubmitError] = useState<string | null>(null);
+
   const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -41,8 +45,7 @@ export default function CheckoutForm() {
     clearCart,
     totalCents,
     deliveryChargeCents,
-    isCartEmpty,
-    deliveryFeeDisplay
+    isCartEmpty
   } = useCheckoutCartWithFulfilment({ fulfilmentType });
 
   const doHandleSubmit = handleSubmit(async (data: CheckoutFormData) => {
@@ -80,14 +83,14 @@ export default function CheckoutForm() {
     router.push(`/order-confirmation/${result.orderId}`);
   });
 
+  const disableSubmit = Boolean(isSubmitting || isCartEmpty);
+
   return (
-    <>
-      <CheckoutTotals
-        subtotalCents={subtotalCents}
-        totalCents={totalCents}
-        deliveryFeeText={deliveryFeeDisplay}
-      />
-      <hr />
+    <div suppressHydrationWarning>
+      {/* Zustand persists cart state in localStorage and rehydrates on the client.
+          During hydration, the server-rendered cart state may temporarily differ
+          from the client state. suppressHydrationWarning prevents React from
+          reporting this expected mismatch. */}
       <form onSubmit={doHandleSubmit}>
         <CustomerFields register={register} errors={errors} />
 
@@ -96,23 +99,33 @@ export default function CheckoutForm() {
           errors={errors}
           fulfilmentType={fulfilmentType}
         />
-        <hr />
 
         <PaymentFields register={register} errors={errors} />
-        <hr />
         {submitError ? (
-          <p data-testid="checkout-form-submit-error" role="alert">
+          <p
+            className={styles.error}
+            data-testid="checkout-form-submit-error"
+            role="alert"
+          >
             {submitError}
           </p>
         ) : null}
-        <button
-          data-testid={'checkout-page-submit-button'}
-          type="submit"
-          disabled={isSubmitting || isCartEmpty}
-        >
-          {isSubmitting ? 'Placing order...' : 'Place order'}
-        </button>
+        <hr />
+        <CheckoutTotals totalCents={totalCents} />
+        <div className={styles.checkoutpage__placeOrder}>
+          <button
+            data-testid={'checkout-page-submit-button'}
+            type="submit"
+            disabled={disableSubmit}
+            className={styles.checkoutpage__placeOrder__submitButton}
+          >
+            <CreditCard
+              className={styles.checkoutpage__placeOrder__submitButton__icon}
+            />
+            {isSubmitting ? 'Placing order...' : 'Place order'}
+          </button>
+        </div>
       </form>
-    </>
+    </div>
   );
 }

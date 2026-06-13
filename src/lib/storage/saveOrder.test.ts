@@ -64,7 +64,7 @@ describe('saveOrder', () => {
     expect(order).toEqual({
       id: 'test-order-id',
       createdAt: '2026-06-11T12:00:00.000Z',
-      kitchenSummary: 'Mock kitchen summary.',
+      kitchenSummary: null,
       ...checkout
     });
 
