@@ -157,7 +157,7 @@ pnpm test
 Runs unit and integration tests.
 
 ```bash
-pnpm test:e2e
+pnpm e2e
 ```
 
 Runs Playwright end-to-end tests.

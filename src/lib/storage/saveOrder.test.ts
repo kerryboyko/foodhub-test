@@ -1,7 +1,7 @@
 import { saveOrder } from './saveOrder';
 import { ensureOrdersFile } from './ensureOrdersFile.js';
-import type { CheckoutFormData } from '@/schemas/checkout';
 import { CheckoutRequestData } from '@/schemas/checkoutRequest';
+import { ordersFilePath } from './ordersFilePath';
 
 const aiMocks = vi.hoisted(() => ({
   generateKitchenSummary: vi.fn()
@@ -28,6 +28,47 @@ vi.mock('./ensureOrdersFile.js', () => ({
   ensureOrdersFile: mocks.ensureOrdersFile
 }));
 
+// helpers
+
+const toStoredCustomer = (customer: CheckoutRequestData['customer']) => {
+  const {
+    creditCard: _creditCard,
+    ccExpiration: _ccExpiration,
+    ccCVCcode: _ccCVCcode,
+    ...storedCustomer
+  } = customer;
+
+  return storedCustomer;
+};
+
+const mockCheckout = {
+  customer: {
+    name: 'Bob',
+    email: 'bob@example.com',
+    phone: '555-1234',
+    fulfilmentType: 'delivery',
+    addressLine1: '123 Test Street',
+    postcode: 'D01 TEST',
+    notes: '',
+    creditCard: '4242424242424242',
+    ccExpiration: '01/99',
+    ccCVCcode: '111'
+  },
+  order: {
+    items: [
+      {
+        id: 'item_1001',
+        name: 'Vegetable Spring Rolls',
+        priceCents: 595,
+        quantity: 2
+      }
+    ],
+    subtotalCents: 1190,
+    deliveryChargeCents: 300,
+    totalCents: 1490
+  }
+};
+
 describe('saveOrder', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -48,14 +89,7 @@ describe('saveOrder', () => {
   });
 
   it('saves a new order', async () => {
-    const checkout = {
-      name: 'Bob',
-      email: 'bob@example.com',
-      phone: '555-1234',
-      fulfilmentType: 'delivery'
-    } satisfies CheckoutFormData;
-
-    const order = await saveOrder(checkout as unknown as CheckoutRequestData);
+    const order = await saveOrder(mockCheckout as any);
 
     expect(ensureOrdersFile).toHaveBeenCalledOnce();
 
@@ -65,7 +99,8 @@ describe('saveOrder', () => {
       id: 'test-order-id',
       createdAt: '2026-06-11T12:00:00.000Z',
       kitchenSummary: null,
-      ...checkout
+      order: mockCheckout.order,
+      customer: toStoredCustomer(mockCheckout.customer as any)
     });
 
     expect(fsMocks.writeFile).toHaveBeenCalledWith(
@@ -73,32 +108,46 @@ describe('saveOrder', () => {
       JSON.stringify([order], null, 2),
       'utf8'
     );
+    expect(fsMocks.writeFile).toHaveBeenCalledWith(
+      ordersFilePath,
+      expect.not.stringContaining(mockCheckout.customer.creditCard),
+      'utf8'
+    );
   });
 
   it('appends to existing orders', async () => {
-    const existingOrder = {
-      id: 'existing-order-id',
-      createdAt: '2026-06-10T12:00:00.000Z',
-      name: 'Alice',
-      email: 'alice@example.com',
-      phone: '555-0000',
-      fulfilmentType: 'collection'
+    const firstOrder = {
+      order: mockCheckout.order,
+      customer: toStoredCustomer(mockCheckout.customer as any)
     };
 
-    fsMocks.readFile.mockResolvedValue(JSON.stringify([existingOrder]));
+    fsMocks.readFile.mockResolvedValue(JSON.stringify([firstOrder]));
 
-    const checkout = {
-      name: 'Bob',
-      email: 'bob@example.com',
-      phone: '555-1234',
-      fulfilmentType: 'delivery'
-    } satisfies CheckoutFormData;
+    const alice = {
+      customer: {
+        ...mockCheckout.customer,
+        name: 'Alice',
+        email: 'alice@example.com',
+        phone: '555-1234',
+        fulfilmentType: 'delivery'
+      },
 
-    const order = await saveOrder(checkout as unknown as CheckoutRequestData);
+      order: mockCheckout.order
+    };
+
+    const storedAlice = {
+      id: 'test-order-id',
+      createdAt: '2026-06-11T12:00:00.000Z',
+      customer: toStoredCustomer(alice.customer as any),
+      order: alice.order,
+      kitchenSummary: null
+    };
+
+    await saveOrder(alice as unknown as CheckoutRequestData);
 
     expect(fsMocks.writeFile).toHaveBeenCalledWith(
       expect.any(String),
-      JSON.stringify([existingOrder, order], null, 2),
+      JSON.stringify([firstOrder, storedAlice], null, 2),
       'utf8'
     );
   });

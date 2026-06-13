@@ -71,4 +71,4 @@ jobs:
         run: pnpm exec playwright install --with-deps
 
       - name: Run E2E tests
-        run: pnpm run e2e
+        run: pnpm exec playwright test

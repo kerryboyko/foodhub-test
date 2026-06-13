@@ -58,4 +58,37 @@ export const CheckoutSchema = z
     }
   });
 
+export const SafeCheckoutSchema = z
+  .object({
+    name: z.string().min(1, 'Name is required'),
+    phone: z.string().min(1, 'Phone is required'),
+    email: z.string().email('Enter a valid email'),
+    fulfilmentType: z.enum(['delivery', 'collection']),
+    addressLine1: z.string().optional(),
+    addressLine2: z.string().optional(),
+    postcode: z.string().optional(),
+    notes: z.string().optional()
+  })
+  .superRefine((data, ctx) => {
+    if (data.fulfilmentType === 'delivery') {
+      if (!data.addressLine1) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['addressLine1'],
+          message: 'Address is required for delivery'
+        });
+      }
+
+      if (!data.postcode) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['postcode'],
+          message: 'Postcode is required for delivery'
+        });
+      }
+    }
+  });
+
+export type SafeCheckoutFormData = z.infer<typeof CheckoutSchema>;
+
 export type CheckoutFormData = z.infer<typeof CheckoutSchema>;
