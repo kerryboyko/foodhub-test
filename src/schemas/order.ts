@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CheckoutSchema } from './checkout';
+import { CheckoutSchema, SafeCheckoutSchema } from './checkout';
 import { OrderSummarySchema } from './orderSummary';
 
 export const OrderSchema = z.object({
@@ -10,4 +10,11 @@ export const OrderSchema = z.object({
   kitchenSummary: z.string().nullable().optional()
 });
 
+export const StoredOrderSchema = OrderSchema.omit({
+  customer: true
+}).extend({
+  customer: SafeCheckoutSchema
+});
+
 export type Order = z.infer<typeof OrderSchema>;
+export type StoredOrder = z.infer<typeof StoredOrderSchema>;
